@@ -34,15 +34,33 @@ void init_scene(Scene* scene)
 
 void set_lighting()
 {
-    float ambient_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    float diffuse_light[] = { 1.0f, 1.0f, 1.0, 1.0f };
-    float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    float position[] = { 0.0f, 0.0f, 10.0f, 1.0f };
+    void set_lighting()
+{
+    float ambient_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };  // Kikapcsolva
+    float diffuse_light[] = { 1.0f, 1.0f, 1.0f, 1.0f };  // Bekapcsolva
+    float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f }; // Kikapcsolva
+    float position[] = { 0.0f, 0.0f, 5.0f, 1.0f };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
     glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
+
+    float specular_light[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Fényes csillogás
+    float diffuse_light[] = { 0.0f, 0.0f, 0.0f, 1.0f }; // Kikapcsolva
+
+    float ambient_light[] = { 0.2f, 0.2f, 0.2f, 1.0f };  // Környezeti fény
+    float diffuse_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };  // Kikapcsolva
+    float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f }; // Kikapcsolva
+
+//pl:
+float ambient_light[] = { 0.2f, 0.2f, 0.2f, 1.0f };
+float diffuse_light[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+float specular_light[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+
+}
+
 }
 
 void set_material(const Material* material)
@@ -51,6 +69,12 @@ void set_material(const Material* material)
         material->ambient.red,
         material->ambient.green,
         material->ambient.blue
+       
+        scene->material.ambient = (Color){ 0.3f, 0.3f, 0.3f };
+        scene->material.diffuse = (Color){ 0.2f, 0.2f, 0.2f };
+        scene->material.specular = (Color){ 1.0f, 1.0f, 1.0f };
+        scene->material.shininess = 100.0f;
+
     };
 
     float diffuse_material_color[] = {
@@ -74,13 +98,25 @@ void set_material(const Material* material)
 
 void update_scene(Scene* scene)
 {
-    void update_scene(Scene* scene) {
         scene->rotation_angle += 1.0f;
         if (scene->rotation_angle > 360.0f) {
             scene->rotation_angle -= 360.0f;
         }
-    }   
+{
+        static float rotation = 0.0;
+        rotation += 45.0 * time;  // 45 fok másodpercenként
+
+        glPushMatrix();
+        glRotatef(rotation, 0, 1, 0);
+        draw_model(&(scene->cube));
+        glPopMatrix();
 }
+update_light_position(SDL_GetTicks() / 1000.0);
+float intensity = (sin(SDL_GetTicks() / 1000.0) + 1) / 2; // 0 és 1 között oszcillál
+float diffuse_light[] = { intensity, 0.5f * intensity, 1.0f - intensity, 1.0f };
+glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
+
+    }   
 
 void render_scene(const Scene* scene)
 {
@@ -116,6 +152,26 @@ void render_scene(const Scene* scene)
             set_material(&(scene->material));
             draw_model(&(scene->cube));
             glPopMatrix();
+
+
+            void render_scene2(const Scene* scene)
+            {
+                set_material(&(scene->material));
+                set_lighting();
+                
+                // Kocka megjelenítése
+                glPushMatrix();
+                glTranslatef(-2.0, 0.0, 0.0);
+                draw_model(&(scene->cube));
+                glPopMatrix();
+
+                // Ház megjelenítése
+                glPushMatrix();
+                glTranslatef(2.0, 0.0, 0.0);
+                draw_model(&(scene->house));
+                glPopMatrix();
+            }
+
 }
 
 void draw_origin()
@@ -142,4 +198,25 @@ void set_colors()
     scene->material.diffuse.red = 0.0;
     scene->material.diffuse.green = 0.0;
     scene->material.diffuse.blue = 1.0;  // Kék színű lesz
+}
+
+void update_light_position(double time)
+{
+    float position[] = { 5.0f * cos(time), 2.0f, 5.0f * sin(time), 1.0f };
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+}
+
+static float light_intensity = 1.0f;
+
+void handle_app_events(){
+case SDL_SCANCODE_UP:
+    light_intensity = fmin(1.0f, light_intensity + 0.1f);
+    break;
+case SDL_SCANCODE_DOWN:
+    light_intensity = fmax(0.0f, light_intensity - 0.1f);
+    break;
+
+    float diffuse_light[] = { light_intensity, light_intensity, light_intensity, 1.0f };
+glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
+
 }
