@@ -16,7 +16,7 @@ void init_app(App* app, int width, int height)
     }
 
     app->window = SDL_CreateWindow(
-        "Origin!",
+        "Eloszoba",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height,
         SDL_WINDOW_OPENGL);
@@ -43,7 +43,6 @@ void init_app(App* app, int width, int height)
     init_camera(&(app->camera));
     init_scene(&(app->scene));
 
-    app->uptime = (double)SDL_GetTicks() / 1000;
     app->is_running = true;
 }
 
@@ -54,7 +53,7 @@ void init_opengl()
     glEnable(GL_NORMALIZE);
     glEnable(GL_AUTO_NORMAL);
 
-    glClearColor(0.0, 0.6, 0.0, 1.0);
+    glClearColor(0.1, 0.1, 0.1, 1.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -63,7 +62,10 @@ void init_opengl()
 
     glClearDepth(1.0);
 
-    glLineWidth(5);
+    glEnable(GL_TEXTURE_2D);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 }
 
 void reshape(GLsizei width, GLsizei height)
@@ -91,7 +93,7 @@ void reshape(GLsizei width, GLsizei height)
     glFrustum(
         -.08, .08,
         -.06, .06,
-        .1, 1000
+        .1, 10
     );
 }
 
@@ -187,6 +189,10 @@ void render_app(App* app)
     render_scene(&(app->scene));
     glPopMatrix();
 
+    if (app->camera.is_preview_visible) {
+        show_texture_preview();
+    }
+
     SDL_GL_SwapWindow(app->window);
 }
 
@@ -201,4 +207,81 @@ void destroy_app(App* app)
     }
 
     SDL_Quit();
+}
+
+float cameraX = 0.0f, cameraY = 0.0f, cameraZ = 5.0f; // Globális változók a kamera pozíciójához és a fényekhez 3D-hez
+float light_intensity = 1.0;                          // A fényerő szabályozására szolgáló változó
+int show_help = 0;                                    // A súgó megjelenítésének állapotát tároló változó
+
+SDL_Window* window = NULL;
+SDL_GLContext context;
+
+int feladatok(int argc, char** argv) {
+     // SDL inicializálása
+     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("SDL hiba: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    window = SDL_CreateWindow("Előszoba - Feladatok", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600, SDL_WINDOW_OPENGL);
+    if (!window) {
+        printf("SDL Window hiba: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    context = SDL_GL_CreateContext(window);
+    if (!context) {
+        printf("SDL_GLContext hiba: %s\n", SDL_GetError());
+        return 1;
+    }
+
+    // Inicializáljuk OpenGL környezetet
+    init(); // Grafikai környezet beállítása (OpenGL, fények)
+
+    SDL_Event event;
+
+    // A fő ciklus
+    while (1) {
+        // Események kezelése
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                SDL_Quit();
+                return 0;
+            }
+
+            if (event.type == SDL_KEYDOWN) {
+                handleKeypress(&event.key);  // Billentyűzet kezelés
+                specialKeys(&event.key);     // Speciális billentyűk
+            }
+
+            // Egyéb események kezelése (például ablak átméretezése)
+            if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                handleResize(event.window.data1, event.window.data2);
+            }
+        }
+
+// Képernyő törlés
+       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Tisztítja a képernyőt
+
+       glLoadIdentity(); // Mátrix alaphelyzetbe állítása
+       gluLookAt(cameraX, cameraY, cameraZ, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f); // Kamera beállítása
+
+// Előszoba és berendezések kirajzolása
+       drawEloszoba();        
+       iniSzoba();
+       
+
+// Feladatok (ajtó kód beírása)
+       int doorUnlocked = checkDoorCode(); // Ellenőrizzük, hogy helyes-e a kód
+       if (doorUnlocked) {
+           printf("A szoba ajtaja kinyílt!\n");
+       } else {
+           printf("Hibás kód! Próbáld újra.\n");
+       }
+
+// Képernyő frissítése
+       SDL_GL_SwapWindow(window);
+   }
+
+   return 0;
 }
