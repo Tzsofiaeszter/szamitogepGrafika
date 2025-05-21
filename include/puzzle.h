@@ -28,6 +28,19 @@ typedef struct Puzzle {
     void (*render)(struct Puzzle* puzzle);
 } Puzzle;
 
+    // === PUZZLE: WORD_ORDER ===
+    typedef struct {
+        char correct_word[5];
+        int correct_order[4];
+    } PuzzleWordOrderData;
+/*
+      // === PUZZLE: SCISSOR_PILLOW ===
+    typedef struct {
+        bool has_scissors;
+        bool pillow_cut;
+    } PuzzleScissorPillowData;
+*/
+
 Puzzle* puzzle_create(PuzzleType type);
 bool puzzle_try_solve(Puzzle* puzzle, void* data);
 void puzzle_render(Puzzle* puzzle);

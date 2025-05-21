@@ -15,14 +15,13 @@
 #define VIEWPORT_RATIO (4.0 / 3.0)
 #define VIEWPORT_ASPECT 50.0
 
-typedef struct {
+typedef struct App {
     SDL_Window* window;
     SDL_GLContext gl_context;
     bool is_running;
     double uptime;
 
     SDL_Event event;
- 
     
     GameState game_state;
     Menu menu;
@@ -38,9 +37,11 @@ void reshape(GLsizei width, GLsizei height);
 
 bool initialize_app(App* app);
 void init_app(App* app, int width, int height);
-void handle_app_events(App* app, SDL_Event* event);
+void handle_app_events(App* app);
 void update_app(App* app);
 void render_app(App* app);
 void destroy_app(App* app);
+
+
 
 #endif 
