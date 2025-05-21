@@ -1,7 +1,6 @@
-// light.c
+#include "light.h" 
 
 #include <GL/gl.h>
-#include "light.h"  // amiben deklarálod a Light struct-ot és az init_light prototípust
 
 void init_light(Light* light) {
     glEnable(light->id); // pl. GL_LIGHT0

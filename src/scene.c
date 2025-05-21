@@ -101,48 +101,55 @@ void init_lights(Scene* scene) {
     scene->fenyek[3].specular[2] = 0.4f;
     scene->fenyek[3].specular[3] = 1.0f;
     init_light(&scene->fenyek[3]);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
+    glEnable(GL_LIGHT3);
 }
 
 void init_scene(Scene* scene){
 // AJTO 4db
-    load_model(&(scene->ajtofelfa1), "assets/models/ajtofelfa1.obj");
-    load_model(&(scene->ajtolap1), "assets/models/ ajtolap1.obj");
-    load_model(&(scene->ajtofelfa2), "assets/models/ajtofelfa2.obj");
-    load_model(&(scene->ajtolap2), "assets/models/ajtolap2.obj");
-    load_model(&(scene->ajtofelfa3), "assets/models/ajtofelfa3.obj");
-    load_model(&(scene->ajtolap3), "assets/models/ajtolap3.obj");
-    load_model(&(scene->ajtofelfa4), "assets/models/ajtofelfa4.obj");
-    load_model(&(scene->ajtolap4), "assets/models/ajtolap4.obj");
+    load_model(&(scene->ajtofelfa1),"assets/models/ajtofelfa1.obj");
+    load_model(&(scene->ajtolap1),"assets/models/ajtolap1.obj");
+    load_model(&(scene->ajtofelfa2),"assets/models/ajtofelfa2.obj");
+    load_model(&(scene->ajtolap2),"assets/models/ajtolap2.obj");
+    load_model(&(scene->ajtofelfa3),"assets/models/ajtofelfa3.obj");
+    load_model(&(scene->ajtolap3),"assets/models/ajtolap3.obj");
+    load_model(&(scene->ajtofelfa4),"assets/models/ajtofelfa4.obj");
+    load_model(&(scene->ajtolap4),"assets/models/ajtolap4.obj");
 // ASZTAL
-    load_model(&(scene->asztal_lap), "assets/models/asztal_lap.obj");
-    load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
+    load_model(&(scene->asztal_lap),"assets/models/asztal_lap.obj");
+    load_model(&(scene->asztal_lab),"assets/models/asztal_lab.obj");
 // SZŐNYEG - ELŐSZOBÁBA
-    load_model(&(scene->eloszoba_szonyeg), "assets/models/eloszoba_szonyeg.obj");
+    load_model(&(scene->eloszoba_szonyeg),"assets/models/eloszoba_szonyeg.obj");
 // FALAK
-    load_model(&(scene->falak), "assets/models/falak.obj");
+    load_model(&(scene->falak),"assets/models/falak.obj");
 // KANAPÉ- NAPPALIBA
-    load_model(&(scene->kanape), "assets/models/kanape.obj");
+    load_model(&(scene->kanape),"assets/models/kanape.obj");
 // KÉK PUFF- ELŐSZOBA
-    load_model(&(scene->kek_pufika), "assets/models/kek_pufika.obj");
+    load_model(&(scene->kek_pufika),"assets/models/kek_pufika.obj");
 // KÜLTÉRI SZÉK
-    load_model(&(scene->kintiSzek), "assets/models/kintiSzek.obj");
+    load_model(&(scene->kintiSzek),"assets/models/kintiSzek.obj");
 // KÜLTÉRI FA KORLÁT
-    load_model(&(scene->kulteri_fa), "assets/models/kulteri_fa.obj");
+    load_model(&(scene->kulteri_fa),"assets/models/kulteri_fa.obj");
 // KÖNYVESPOLC KÖNYVEKKEL
-    load_model(&(scene->konyvespolc), "assets/models/konyvespolc.obj");
+    load_model(&(scene->konyvespolc),"assets/models/konyvespolc.obj");
 //NAPPALI SZŐNYEGE
-    load_model(&(scene->nappali_szonyeg), "assets/models/nappali_szonyeg.obj");
+    load_model(&(scene->nappali_szonyeg),"assets/models/nappali_szonyeg.obj");
 // KÜLTÉRI LÉPCSŐ ÉS PADLÓ
-    load_model(&(scene->lepcso_padlo), "assets/models/lepcso_padlo.obj");
+    load_model(&(scene->lepcso_padlo),"assets/models/lepcso_padlo.obj");
 // BELTÉRI PARKETTA
-   load_model(&(scene->padlo), "assets/models/padlo.obj");
+   load_model(&(scene->padlo),"assets/models/padlo.obj");
 // RÉGO ÓRA
-    load_model(&(scene->regi_ora), "assets/models/regi_ora.obj");
+    load_model(&(scene->regi_ora),"assets/models/regi_ora.obj");
 // SZÉKEK AZ ELŐSZOBÁBA
-    load_model(&(scene->szek_alj), "assets/models/szek_alj.obj");
-    load_model(&(scene->szek_teteje), "assets/models/szek_teteje.obj");
+    load_model(&(scene->szek_alj),"assets/models/szek_alj.obj");
+    load_model(&(scene->szek_teteje),"assets/models/szek_teteje.obj");
 // TETŐ 
-    load_model(&(scene->teto), "assets/models/teto.obj");
+    load_model(&(scene->teto),"assets/models/teto.obj");
  
 // Textúrák betöltése
     load_textures(scene);
@@ -335,7 +342,7 @@ void set_lighting(){
 }
 
 void update_scene(Scene* scene){
-    // Ha nincs frissítés, üres maradhat - animációkhoz
+   (void) scene; // Ha nincs frissítés, üres maradhat - animációkhoz
 }
 
 void set_scene_lights(const Scene* scene){

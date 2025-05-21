@@ -1,7 +1,7 @@
+#include "app.h"
+
 #include <stdio.h>
 #include <SDL2/SDL.h> 
-
-#include "app.h"
 
 int main(int argc, char* argv[]) {
     App app;
@@ -10,7 +10,7 @@ int main(int argc, char* argv[]) {
     init_app(&app, 800, 600);
     while (app.is_running) {
         while (SDL_PollEvent(&event)) { 
-             handle_app_events(&app, &event);
+             handle_app_events(&app);
             switch (event.type) {
                 case SDL_QUIT:
                     app.is_running = false;
@@ -29,5 +29,6 @@ int main(int argc, char* argv[]) {
 /*
 FUTTATÁS
 cd C:\Users\Turi Zsófia\Documents\Grafika\szamitogepGrafika\szamitogepGrafika-1\szamitogepGrafika\feladat\Hadesz
-make --debug=b
+make 
+game
 */

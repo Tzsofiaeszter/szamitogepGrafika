@@ -24,6 +24,7 @@ int load_model(Model* model, const char* filename){
         printf("ERROR: Unable to read the model data!\n");
         return FALSE;
     }
+    fclose(obj_file);
     return TRUE;
 }
 
@@ -53,13 +54,13 @@ void count_elements(Model* model, FILE* file){
 
 int read_elements(Model* model, FILE* file){
     char line[LINE_BUFFER_SIZE];
-    int vertex_index;
+    int vertex_index = 0;
     int texture_index;
     int normal_index;
     int triangle_index;
     int success;
 
-    allocate_model(model);
+    //allocate_model(model);
     vertex_index = 1;
     texture_index = 1;
     normal_index = 1;
