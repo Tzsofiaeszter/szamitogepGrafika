@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <SDL2/SDL.h> // SDL_Renderer használata miatt szükséges
 
 #define MAX_KOD_LENGTH 4
 
@@ -16,6 +17,7 @@ Előszoba állapotának inicializálása
         if (eloszoba) {
             eloszoba->puzzle_solved = false;
             eloszoba->kod_length = 0;
+            memset(eloszoba->kod_input, 0, sizeof(eloszoba->kod_input));
             // Itt inicializálhatom még az eloszoba további állapotát, textúrákat stb.
             // Például:
             // eloszoba->background_texture = loadTexture("textures/eloszoba_background.png");
@@ -50,7 +52,7 @@ Felhasználói események kezelése az előszobában
                         game_state->current_scene= true; // Jelzi a GameState-nek, hogy a szoba megoldva
                     } else {
                         printf("Hibás kód!\n");
-                        // Opcionálisan: kód visszaállítása vagy más visszajelzés
+                        memset(kod_input, 0, MAX_KOD_LENGTH + 1);
                         *kod_length = 0;
                         kod_input[0] = '\0';
                     }

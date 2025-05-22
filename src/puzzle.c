@@ -5,7 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 
-
+// Inicializálja a szókirakó puzzle-t: helyes szó és helyes betűsorrend beállítása
     static void word_order_init(Puzzle* puzzle) {
         PuzzleWordOrderData* data = malloc(sizeof(PuzzleWordOrderData));
         strcpy(data->correct_word, "HOLD");
@@ -15,7 +15,10 @@
         puzzle->state = PUZZLE_STATE_ACTIVE;
     }
 
+// Ellenőrzi, hogy a játékos helyesen adta-e meg a betűk sorrendjét
     static bool word_order_solve(Puzzle* puzzle, void* input) {
+        if (!puzzle || !input || puzzle->state != PUZZLE_STATE_ACTIVE) return false;
+
         int* user_order = (int*)input;
         PuzzleWordOrderData* data = (PuzzleWordOrderData*)puzzle->data;
         for (int i = 0; i < 4; ++i) {
@@ -27,12 +30,17 @@
         return true;
     }
 
+// Kirajzolja a szókirakó feladvány szöveges leírását a képernyőre
     static void word_order_render(Puzzle* puzzle) {
+        if (!puzzle) return;
+        PuzzleWordOrderData* data = (PuzzleWordOrderData*)puzzle->data;
+         if (data) {
         printf("[Szókirakó] Rendezd a betűket helyes sorrendbe!\n");
         printf("Betűk: H - O - L - D\n");
         printf("Pl.: Írd be a sorrendet számként (pl.: 4 1 2 3)\n");
         (void)puzzle; // Jelzi a fordítónak, hogy a paraméter szándékosan nincs használva
     }
+}
 
    /*
   
@@ -93,48 +101,75 @@
         (void)puzzle; // Jelzi a fordítónak, hogy a paraméter szándékosan nincs használva
     }
     */
-    // === PUZZLE: CODE_YEAR ===
+
+    // Inicializálja a kódos puzzle-t (aktuális év megadása szükséges)
     static void code_year_init(Puzzle* puzzle) {
-        puzzle->data = NULL;
-        puzzle->state = PUZZLE_STATE_ACTIVE;
-    }
-
-    static bool code_year_solve(Puzzle* puzzle, void* input) {
-        const char* guess = (const char*)input;
-        if (strcmp(guess, "2025") == 0) {
-            puzzle->solved = true;
-            puzzle->state = PUZZLE_STATE_SOLVED;
-            return true;
+    if (puzzle) {
+        PuzzleCodeYearData* data = malloc(sizeof(PuzzleCodeYearData));
+        if (data) {
+            strcpy(data->correct_code, "2025");
+            puzzle->data = data;
+            puzzle->state = PUZZLE_STATE_ACTIVE;
+        } else {
+            fprintf(stderr, "Hiba: nem sikerült memóriát foglalni a CodeYearData-nak.\n");
+            puzzle->state = PUZZLE_STATE_ERROR;
         }
-        return false;
     }
+}
 
+// Ellenőrzi, hogy a játékos helyesen adta-e meg az évet (2025)
+    static bool code_year_solve(Puzzle* puzzle, void* input) {
+    if (!puzzle || !input || puzzle->state != PUZZLE_STATE_ACTIVE) return false;
+
+    char* user_code = (char*)input;
+    PuzzleCodeYearData* data = (PuzzleCodeYearData*)puzzle->data;
+
+    if (strcmp(user_code, data->correct_code) == 0) {
+        puzzle->solved = true;
+        puzzle->state = PUZZLE_STATE_SOLVED;
+        return true;
+    }
+    return false;
+}
+
+// Kirajzolja a záras puzzle szöveges leírását a képernyőre
     static void code_year_render(Puzzle* puzzle) {
         printf("[Kódzár] Az ajtó zárva van. Írd be a 4 jegyű kódot (aktuális év):\n");
         (void)puzzle; // Jelzi a fordítónak, hogy a paraméter szándékosan nincs használva
     }
 
-    // === PUZZLE: LOGIC (üres placeholder) ===
+// Inicializál egy üres (placeholder) logikai puzzle-t – alapértelmezett viselkedés
     static void logic_init(Puzzle* puzzle) {
-        puzzle->data = NULL;
+    if (puzzle) {
+        puzzle->data = NULL;                        // Nincs specifikus adat
         puzzle->state = PUZZLE_STATE_ACTIVE;
     }
+}
 
+// Automatikusan megoldja a logikai puzzle-t (helyettesítő logika)
     static bool logic_solve(Puzzle* puzzle, void* input) {
+        if (!puzzle || puzzle->state != PUZZLE_STATE_ACTIVE) return false;
+
         puzzle->solved = true;
         puzzle->state = PUZZLE_STATE_SOLVED;
-        (void)input; // Jelzi a fordítónak, hogy a paraméter szándékosan nincs használva
         return true;
     }
 
+// Kirajzolja az üres logikai puzzle üzenetét
     static void logic_render(Puzzle* puzzle) {
-        printf("[Logikai Puzzle] \n");
-        (void)puzzle; // Jelzi a fordítónak, hogy a paraméter szándékosan nincs használva
+        if (!puzzle) return;
+        //printf("[Logikai Puzzle] \n");
+        puzzle; // Jelzi a fordítónak, hogy a paraméter szándékosan nincs használva
     }
 
-    // === Puzzle Factory ===
+// Létrehoz egy új puzzle-típust a megadott típus alapján, és inicializálja azt
     Puzzle* puzzle_create(PuzzleType type) {
         Puzzle* puzzle = malloc(sizeof(Puzzle));
+        if (!puzzle) {
+            fprintf(stderr, "Hiba: nem sikerült memóriát foglalni a Puzzle számára!\n");
+            return NULL;
+        }
+
         puzzle->type = type;
         puzzle->data = NULL;
         puzzle->solved = false;
@@ -170,12 +205,14 @@
         return puzzle;
     }
 
+// Megpróbálja megoldani a puzzle-t, ha még nincs megoldva
     bool puzzle_try_solve(Puzzle* puzzle, void* data) {
         if (!puzzle || !puzzle->solve || puzzle->solved)
             return false;
         return puzzle->solve(puzzle, data);
     }
 
+// Megjeleníti a puzzle aktuális állapotát, és meghívja a hozzá tartozó render függvényt
     void puzzle_render(Puzzle* puzzle) {
         if (!puzzle) return;
 
@@ -191,11 +228,14 @@
             puzzle->render(puzzle);
     }
 
-    void puzzle_free(Puzzle* puzzle) {
+// Felszabadítja a puzzle memóriaterületét
+    void puzzle_destroy(Puzzle* puzzle) {
         if (puzzle) {
-            if (puzzle->data)
+            if (puzzle->data){
                 free(puzzle->data);
-            free(puzzle);
+            puzzle->data = NULL;
         }
+          free(puzzle);
     }
+}
 

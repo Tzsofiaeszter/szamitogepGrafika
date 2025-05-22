@@ -1,52 +1,92 @@
 /*
-#include <stdio.h>
-#include<SDL2/SDL.h>
+// #include <stdio.h> // Eltávolítva, ha nincs konzolos I/O
+// #include <SDL2/SDL.h> // Eltávolítva, ha nincs közvetlen SDL eseménykezelés
 #include "nappali.h"
 #include "puzzle_logic.h"
-#include "game_state.h"
-#include "scene_manager.h"
+// #include "game_state.h" // GameState-et közvetlenül a scene_manager vagy app kezeli
+#include "scene_manager.h" // SceneManager* kellhet a szobaváltáshoz
 
+// A Nappali specifikus adatai
+// static PuzzleRoom nappali_room; // EZT LOKÁLISSÁ KELL TENNI, PL. EGY STRUCTBA BEÉPÍTENI
 
-static PuzzleRoom nappali_room;
+Inicializálja a nappali szobát.
+Ez a függvény most egy NappaliData struktúrát kap, ami majd a SceneManager része.
 
-void nappali_init(SceneManager* manager) {
-    puzzle_room_init(&nappali_room, NAPPALI, PUZZLE_CODE_WORD);
-}
-
-void nappali_render(SceneManager* manager) {
-    printf("=== Nappali ===\n");
-    printf("Ez a nappali.\n");
-    printf("A szoba közepén szép színes szőnyeg. Ezen egy kis dohányzóasztal áll, rajta egy tulipánnal teli váza.\n");
-    printf("Balra egy sarok ülőgarnitúra, rajta három szép színes párna.\n");
-    printf("Jobbra egy nagy polcozott szekrény, rajta televízió, vázák, fényképek, könyvek és egy olló.\n");
-    printf("Az ablakon átlátszó függöny van, mögötte rács.\n\n");
-
-    if (!nappali_room.puzzle->solved) {
-        printf("Az ajtón egy találós kérdés olvasható:\n");
-        printf("\"Mikor fekszel, ő akkor kél.\n");
-        printf("Egyszer egész, máskor csak fél.\n");
-        printf("Nincsen tüze, mégis lámpás,\n");
-        printf("A vándornak szinte áldás.\"\n");
-        printf("A megfejtés egy négybetűs szó, betűi össze vannak keverve.\n");
-        puzzle_render(nappali_room.puzzle);
-    } else {
-        printf("A találós kérdést megfejtetted, az ajtó kinyílt.\n");
+void nappali_init(NappaliData* nappali_data) {
+    if (nappali_data) {
+        puzzle_room_init(&(nappali_data->room), NAPPALI, PUZZLE_CODE_WORD);
+        // printf("Nappali inicializálva.\n"); // Debug
     }
 }
 
-void nappali_handle_input(SceneManager* manager, const char* input) {
-    if (!nappali_room.puzzle->solved) {
-        if (puzzle_try_solve(nappali_room.puzzle, (void*)input)) {
-            printf("Helyes megfejtés! Az ajtó kinyílt.\n");
-        } else {
-            printf("Nem jó a megfejtés. Próbáld újra!\n");
+
+Kirajzolja a nappali szobát.
+Ez a függvény az SDL renderelési ciklusba illeszkedik majd.
+A printf hívások helyett grafikus megjelenítés lesz.
+
+void nappali_render(const NappaliData* nappali_data, SDL_Renderer* renderer) {
+    if (!nappali_data || !renderer) return;
+
+    // printf("=== Nappali ===\n"); // Ezt majd az UI rajzolja
+    // printf("Ez a nappali.\n");
+    // ...
+
+    // Ha a puzzle nincs megoldva, rajzold ki a puzzle-t grafikusan
+    if (!nappali_data->room.puzzle->solved) {
+        // printf("Az ajtón egy találós kérdés olvasható:\n");
+        // printf("... (riddle text) ...\n");
+        puzzle_render(nappali_data->room.puzzle); // Ez még konzolos, át kell írni
+    } else {
+        // printf("A találós kérdést megfejtetted, az ajtó kinyílt.\n");
+    }
+
+    // Itt történne a nappali szoba 3D modelljeinek, textúráinak, stb. kirajzolása.
+    // Például:
+    // render_3d_model(nappali_data->room_model);
+    // render_texture(nappali_data->carpet_texture, ...);
+}
+
+
+Kezeli a felhasználói bemenetet a nappali szobában.
+A konzolos scanf helyett az SDL eseményekre reagál.
+
+void nappali_handle_input(NappaliData* nappali_data, const SDL_Event* event, GameState* game_state) {
+    if (!nappali_data || !event || !game_state) return;
+
+    // Itt kellene kezelni a Nappali szoba specifikus interakcióit
+    // Például, ha a felhasználó megpróbálja megoldani a puzzle-t.
+
+    if (event->type == SDL_KEYDOWN) {
+        switch (event->key.keysym.sym) {
+            case SDLK_RETURN:
+                if (!nappali_data->room.puzzle->solved) {
+                    // Itt kellene valamilyen UI inputot kezelni a puzzle megfejtéséhez
+                    // Például egy text input mezőből származó adat.
+                    // Jelenleg a puzzle_logic.c még konzolos scanf-et használ.
+                    // Ez a hívás itt már nem helyes, ha az input.c kezeli a bevitelt.
+                    // puzzle_try_solve(nappali_data->room.puzzle, /* valamilyen input data */);
+                /*} else {
+                    // printf("Ez a puzzle már meg van oldva.\n"); // Debug
+                }
+                break;
+            // Esetleg egyéb interakciók, pl. tárgyak felvétele, ajtók nyitása
+            default:
+                break;
         }
-    } else {
-        printf("Az ajtó már nyitva van.\n");
     }
+    // Az Eloszoba példájához hasonlóan, ha a puzzle szöveges bevitelt igényel:
+    // if (event->type == SDL_TEXTINPUT && !nappali_data->room.puzzle->solved) {
+    //    // eloszoba_handle_event(event, &(nappali_data->room.puzzle_data), ...); // Adaptálni kell a Nappali puzzle-höz
+    // }
 }
 
-void nappali_cleanup(SceneManager* manager) {
-    puzzle_room_cleanup(&nappali_room);
+
+Felszabadítja a nappali szoba által lefoglalt erőforrásokat.
+
+void nappali_destroy(NappaliData* nappali_data) {
+    if (nappali_data) {
+        puzzle_destroy(nappali_data->room.puzzle);
+        // Itt kellene felszabadítani a textúrákat, modelleket stb.
+    }
 }
 */

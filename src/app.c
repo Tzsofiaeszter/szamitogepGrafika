@@ -1,9 +1,15 @@
 #include "app.h"
 #include "scene.h"
+#include "light.h"      // A fényekhez
+#include "input.h"      // InputContext és input_handle_event hívásához
+#include "game_state.h" // GameState inicializálásához
+#include "menu.h"       // Menu inicializálásához
+#include "init.h"       // init_opengl, reshape, init_sdl (ha itt hívjuk)
 
 #include <stdio.h>
 #include <SDL2/SDL_image.h>
 #include <GL/gl.h>
+
 
 /*
 Inicializálja az alkalmazást:
@@ -46,12 +52,24 @@ Inicializálja az alkalmazást:
             return;
         }
 
+    // OpenGL beállítások
         init_opengl();
         reshape(width, height);
 
-        init_camera(&(app->camera));
-        init_scene(&(app->scene));
-
+    // Játékállapot, menü, kamera, jelenet inicializálása
+        game_state_init(&(app->game_state));            // Inicializálja a GameState-et (benne az Eloszoba is)
+        menu_init(&(app->menu));                        // Inicializálja a Menüt
+        init_camera(&(app->camera));                    // Inicializálja a Kamerát
+        init_scene(&(app->scene));  // Inicializálja a Jelenetet (átadja a GameState-et a fényerőhöz)
+    
+    // Fény mozgásával kapcsolatos változók inicializálása
+    app->brightness =128;    
+    app->light_move_speed = 0.5f;
+        app->move_light_x = 0;
+        app->move_light_y = 0;
+        app->move_light_z = 0;
+    
+        app->uptime = (double)SDL_GetTicks() / 1000.0;
         app->is_running = true;
     }
     
@@ -117,73 +135,49 @@ Felhasználói események kezelése (billentyűzet, egér, bezárás stb.)
  - Kamera mozgatása gombnyomásokra
  - Kilépés ESC vagy ablak bezárásra
 */
-    void handle_app_events(App* app){
-    SDL_Event event;
-        static bool is_mouse_down = false;
-        static int mouse_x = 0;
-        static int mouse_y = 0;
-        int x;
-        int y;
+   void handle_app_events(App* app){
+    // Létrehozunk egy InputContext-et és inicializáljuk a szükséges pointerekkel
+    InputContext input_ctx;
+    input_init(&input_ctx, &(app->game_state), &(app->menu), &(app->camera), app);
 
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) { 
-            case SDL_KEYDOWN:
-                switch (event.key.keysym.scancode) {
-                case SDL_SCANCODE_ESCAPE:
-                    app->is_running = false;
-                    break;
-                case SDL_SCANCODE_W:
-                    set_camera_speed(&(app->camera), 1);
-                    break;
-                case SDL_SCANCODE_S:
-                    set_camera_speed(&(app->camera), -1);
-                    break;
-                case SDL_SCANCODE_A:
-                    set_camera_side_speed(&(app->camera), 1);
-                    break;
-                case SDL_SCANCODE_D:
-                    set_camera_side_speed(&(app->camera), -1);
-                    break;
-                default:
-                    break;
-                }
-                break;
-            case SDL_KEYUP:
-                switch (event.key.keysym.scancode) {
-                case SDL_SCANCODE_W:
-                case SDL_SCANCODE_S:
-                    set_camera_speed(&(app->camera), 0);
-                    break;
-                case SDL_SCANCODE_A:
-                case SDL_SCANCODE_D:
-                    set_camera_side_speed(&(app->camera), 0);
-                    break;
-                default:
-                    break;
-                }
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-                is_mouse_down = true;
-                break;
-            case SDL_MOUSEMOTION:
-                SDL_GetMouseState(&x, &y);
-                if (is_mouse_down) {
-                    rotate_camera(&(app->camera), mouse_x - x, mouse_y - y);
-                }
-                mouse_x = x;
-                mouse_y = y;
-                break;
-            case SDL_MOUSEBUTTONUP:
-                is_mouse_down = false;
-                break;
+    while (SDL_PollEvent(&(app->event))) {
+        // Továbbítjuk az eseményt az input kezelőnek
+        input_handle_event(&input_ctx, &(app->event));
+
+        // Specifikus App események, amiket az input_handle_event nem feltétlenül kezel közvetlenül
+        switch (app->event.type) {
             case SDL_QUIT:
                 app->is_running = false;
                 break;
+            case SDL_WINDOWEVENT:
+                if (app->event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    app->window_width = app->event.window.data1;
+                    app->window_height = app->event.window.data2;
+                    reshape(app->window_width, app->window_height);
+                }
+                break;
+            // Az SDL_TEXTINPUT eseményt az input_handle_event már továbbítja az eloszoba_handle_event hívásával.
+            // Itt csak azt kellene kezelni, hogy mikor START/STOP a text input.
+            case SDL_KEYDOWN:
+                // Ha a játék az Eloszoba állapotban van és a felhasználó Entert nyomott,
+                // vagy más módon aktiválni/deaktiválni kell a szövegbevitelt
+                if (app->game_state.current_enum_state == GAME_STATE_ELOSZOBA) {
+                    if (app->event.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+                        // Itt lehetne SDL_StopTextInput() ha befejezte a bevitelt,
+                        // vagy ellenőrizni, hogy aktív-e már.
+                        // Jelenlegi beállítással az eloszoba_handle_event kezeli a bevitelt.
+                    } else {
+                        SDL_StartTextInput(); // Folyamatosan engedélyezzük a szövegbevitelt Eloszoba módban
+                    }
+                } else {
+                    SDL_StopTextInput(); // Más állapotokban tiltsuk le a szövegbevitelt
+                }
+                break;
             default:
                 break;
-                }
-            }
         }
+    }
+}
 
 /*
 Az alkalmazás logikai frissítése (pl. idő alapú mozgások)
@@ -198,7 +192,7 @@ Az alkalmazás logikai frissítése (pl. idő alapú mozgások)
         app->uptime = current_time;
 
         update_camera(&(app->camera), elapsed_time);
-        update_scene(&(app->scene));
+        update_scene(&(app->scene), app, elapsed_time);
     }
 
 /*
@@ -232,11 +226,14 @@ Az alkalmazás erőforrásainak felszabadítása
     void destroy_app(App* app) {
         if (app->gl_context != NULL) {
             SDL_GL_DeleteContext(app->gl_context);
+            app->gl_context = NULL; // Fontos, hogy NULL-ra állítsuk felszabadítás után
         }
 
         if (app->window != NULL) {
             SDL_DestroyWindow(app->window);
         }
+        destroy_scene(&(app->scene));
 
         SDL_Quit();
+        IMG_Quit();
     }

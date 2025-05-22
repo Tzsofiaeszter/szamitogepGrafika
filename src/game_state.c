@@ -1,13 +1,10 @@
 #include"init.h"
 #include "game_state.h"
+#include"menu.h"
+#include"eloszoba.h"
 
 #include <stdio.h>
-
-// Jelenlegi állapotfüggvény
-    static void (*current_state_func)(GameState*) = NULL;
-
-// Enum verzió az aktuális állapotról (pl. UI-hoz, logoláshoz)
-    static GameStateEnum current_enum_state = GAME_STATE_MENU;
+#include <string.h> // memset, strcmp miatt
 
 
 /*
@@ -21,6 +18,9 @@ Alapértelmezett állapotként a főmenüt állítja be.
         state->show_help = false;
         state->brightness = 255;
 
+        state->current_state_func = NULL;               // Kezdetben nincs állapotfüggvény
+        state->current_enum_state = GAME_STATE_MENU;    // Kezdő állapot beállítása
+
         // SDL inicializálásának ellenőrzése
         if (!init_sdl()) {
             fprintf(stderr, "SDL  inicializálás sikertelen.\n");
@@ -28,6 +28,7 @@ Alapértelmezett állapotként a főmenüt állítja be.
             return;
         }
 
+        eloszoba_init(&(state->eloszoba_data));
         // Kezdő állapot beállítása (Főmenü)
         game_state_set(state_main_menu, GAME_STATE_MENU);
     }
@@ -39,8 +40,8 @@ Ez végzi el a fő programlogikát minden ciklusban.
 
 void game_state_update(GameState* state) {
         // Ha van beállítva aktuális állapot függvény, végrehajtjuk
-        if (current_state_func) {
-            current_state_func(state);
+        if (state->current_state_func) {
+            state->current_state_func(state);
         }
     }
 
@@ -48,27 +49,40 @@ void game_state_update(GameState* state) {
 Visszaadja az aktuális állapot enum értékét.
 Hasznos lehet pl. naplózáshoz vagy a felhasználói felület frissítéséhez.
 */
-    void game_state_set(void (*new_state)(GameState*), GameStateEnum enum_state) {
-        current_state_func = new_state;  // Az új állapotfüggvény beállítása
-        current_enum_state = enum_state; // Az aktuális állapot enum értékének beállítása
-    }
+   void game_state_set(GameState* state_obj, GameStateEnum new_state_enum) {
+    state_obj->current_enum_state = new_state_enum;
 
-    GameStateEnum game_state_get_enum() {
-        return current_enum_state;
+    switch (new_state_enum) {
+        case GAME_STATE_MENU:
+            state_obj->current_state_func = state_main_menu;
+            break;
+        case GAME_STATE_PLAYING:
+            state_obj->current_state_func = state_play;
+            break;
+        case GAME_STATE_PAUSED:
+            // TODO: state_paused függvény
+            state_obj->current_state_func = NULL; 
+            break;
+        case GAME_STATE_EXIT:
+            state_obj->running = false;
+            state_obj->current_state_func = NULL;
+            break;
+        case GAME_STATE_ELOSZOBA:
+            state_obj->current_state_func = state_eloszoba;
+            break;
+        default:
+            state_obj->current_state_func = NULL; // Alapértelmezett, ha nincs kezelő
+            break;
     }
+}
 
-    /*// A játék befejezésekor a tisztítást végző függvény
-    void game_state_cleanup() {
-        cleanup_sdl();  // SDL és TTF könyvtárak megfelelő felszabadítása
-    }
-    */
    
 /*
 A főmenü állapotot megvalósító függvény.
 Kiírja a menüpontokat, és kezeli a felhasználói bemenetet.
 */
     void state_main_menu(GameState* state) {
-        printf("\n--- Főmenü ---\n");
+        /*printf("\n--- Főmenü ---\n");
         printf("p - Játék indítása\n");
         printf("h - Súgó\n");
         printf("q - Kilépés\n");
@@ -90,7 +104,7 @@ Kiírja a menüpontokat, és kezeli a felhasználói bemenetet.
             default:
                 printf("Érvénytelen választás.\n");  // Hibás input esetén
                 break;
-        }
+        }*/
     }
 
 /*
