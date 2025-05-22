@@ -2,14 +2,19 @@
 #define SCENE_H
 
 #include "camera.h"
-#include "load.h"
-#include "model.h"
-#include "draw.h"
 #include "texture.h"
-#include "init.h"
+#include "model.h"
 #include "light.h"
 
-typedef struct{
+struct App;
+struct GameState;
+
+#include <GL/gl.h>
+
+typedef struct Scene{
+    Light fenyek[4];
+    int n_fenyek;
+
     Model ajtofelfa1;
     Model ajtofelfa2;
     Model ajtofelfa3;
@@ -75,29 +80,14 @@ typedef struct{
     Transform szek_teteje_transform;
     Transform teto_transform;
 
-    Camera camera;
-    Light fenyek[4]; // pl.: 4 fényforrás
-    int n_fenyek;
+ 
 
 } Scene;
 
-int init();
-void init_camera(Camera* camera);
-void init_light(Light* light);
-void init_lights(Scene* scene); 
-void init_scene(Scene* scene);
-void load_textures(Scene* scene); 
-void set_material(const Material* material); 
-void set_lighting();
-void set_scene_lights(const Scene* scene);
-void update_scene(Scene* scene);
-void draw_model(const Model* model);
-void draw_single_model(const Model* model);
+void init_scene(Scene* scene); // Nincs GameState* paraméter, mert a fényerőt az init_lights kapja
+void update_scene(Scene* scene, const struct App* app, double elapsed_time); // App* és elapsed_time hozzáadva
 void render_scene(const Scene* scene);
-//void handle_resize(int w, int h); 
-/*
-void draw_gradient_background(){
-  */
-void cleanup(); 
+void destroy_scene(Scene* scene);
+void init_lights(Scene* scene, int brightness); // Brightness paraméter hozzáadva
 
 #endif 

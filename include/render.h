@@ -2,17 +2,22 @@
 #define RENDER_H
 
 #include <SDL2/SDL.h>
-#include <stdbool.h>
 
-// Kameraállapot
-typedef struct {
-    int x, y;      // Kamera pozíció
-    float zoom;    // Zoom faktor
-} Camera;
+#include "menu.h" // Menu*
+#include "game_state.h" // GameState*
 
-extern Camera camera;
-extern int brightness; // Fényerő globálisan elérhető
+struct App; 
 
-void render_common_background(SDL_Renderer* renderer, int width, int height);
+// Közös háttér kirajzolás fényerő figyelembevételével
+void render_common_background(SDL_Renderer* renderer, int width, int height, int brightness);
 
-#endif
+// Menü kirajzolása
+void render_menu(SDL_Renderer* renderer, const Menu* menu, const GameState* game_state, const struct App* app);
+
+// Súgó képernyő kirajzolása
+void render_help(SDL_Renderer* renderer, const GameState* game_state, const struct App* app);
+
+// Függvény a textúra előnézet megjelenítéséhez (ha máshol van, pl. camera.c)
+// void show_texture_preview(void);
+
+#endif 

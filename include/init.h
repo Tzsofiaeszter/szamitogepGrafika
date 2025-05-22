@@ -5,10 +5,11 @@
 #include <SDL2/SDL.h>
 #include <GL/gl.h> 
 
-typedef struct App App;  // csak forward declaration
+struct App;
 
 bool init_sdl();
 int init(App* app);  // OpenGL inicializálás
-void cleanup();
+//void cleanup();
+void reshape(int width, int height);
 
 #endif

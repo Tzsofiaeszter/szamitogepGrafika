@@ -4,7 +4,7 @@
 #include <GL/gl.h>
 
 // Fényforrás struktúra
-typedef struct {
+typedef struct Light{
     GLenum id;          // Fényforrás azonosítója (GL_LIGHT0, GL_LIGHT1, stb.)
     GLfloat position[4]; // Fény pozíciója (x, y, z, 1.0f a pontszerű fényhez)
     GLfloat ambient[4];    // Környezeti fényerősség (r, g, b, a)
@@ -12,6 +12,9 @@ typedef struct {
     GLfloat specular[4];   // Spekuláris fényerősség (r, g, b, a)
 } Light;
 
-void init_light(Light* light); // Fényforrás inicializálása OpenGL-ben
+void init_light(Light* light);
+void set_light_brightness(Light* light, int brightness);
+
+void set_lighting();
 
 #endif
