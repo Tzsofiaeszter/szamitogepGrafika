@@ -176,7 +176,7 @@ void handle_app_events(App *app)
                 init_camera(&(app->camera));
                 break;
             case SDL_SCANCODE_F1:
-                app->scene.show_help = !(app->scene.show_help);
+                app->scene.segedkepernyo_texture = !(app->scene.segedkepernyo_texture);
                 break;
             case SDL_SCANCODE_UP:
                 app->scene.platform_scale_z += 0.1f;

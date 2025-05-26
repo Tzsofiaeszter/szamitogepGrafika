@@ -6,9 +6,9 @@
 #include <stdio.h>
 
 void init_camera(Camera* camera){
-    camera->position.x = -10.0;               // Kívülről induljon
-    camera->position.y = 0.0;
-    camera->position.z = 4.0;               // Kicsit magasabbról nézzen be
+    camera->position.x = -15.0;               // Kívülről induljon
+    camera->position.y = 10.0;
+    camera->position.z = 5.0;               // Kicsit magasabbról nézzen be
 
     camera->rotation.x = 0.0;
     camera->rotation.y = 0.0;

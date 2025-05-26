@@ -43,7 +43,7 @@ void init_scene(Scene* scene){
             //exit(1);
             }else {
                 printf("ajtofelfa betoltve\n");
-                scale_model(&(scene->ajtofelfa), 3.0, 0.2, 15.0);
+                scale_model(&(scene->ajtofelfa), 5.0, 0.2, 15.0);
             }
 //AJTÓ LAP
     load_model(&(scene->ajtolap), "assets/models/ajtolap.obj");
@@ -52,7 +52,7 @@ void init_scene(Scene* scene){
             //exit(1);
             }else {
                 printf("ajtolap betoltve\n");
-                scale_model(&(scene->ajtolap), 3.0, 0.2, 15.0);
+                scale_model(&(scene->ajtolap),  5.0, 0.2, 15.0);
             }
 //ASZTAL LAP
 load_model(&(scene->asztal_lap), "assets/models/asztal_lap.obj");
@@ -82,7 +82,6 @@ load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
             scale_model(&(scene->szek_teteje), 1.0f, 1.0f, 0.7f);
 
         }
-
 //SZÉK ALJA            
      load_model(&(scene->szek_alj), "assets/models/szek_alj.obj");
     if (scene->szek_alj.vertices == NULL) {
@@ -101,18 +100,14 @@ load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
             printf("szonyeg betoltve\n");
             scale_model(&(scene->szonyeg), 19.0f, 14.0f, 0.02f);           // szoba méretéből 1-1 egységgel kisebb
         }
-        
-
-
-
-
-
+//PUFI
     load_model(&(scene->kek_pufika), "assets/models/kek_pufika.obj");
     if (scene->kek_pufika.vertices == NULL) {
         fprintf(stderr, "Hiba: Nem sikerult betolteni az kek_pufika.obj modellt!\n");
         //xit(1);
         }else {
-                printf("pufika betoltve\n");
+            printf("pufika betoltve\n");
+            scale_model(&(scene->kek_pufika), 4.0f, 2.0f, 2.5f); 
         }
         
     load_model(&(scene->kintiSzek), "assets/models/kintiSzek.obj");
@@ -120,7 +115,8 @@ load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
         fprintf(stderr, "Hiba: Nem sikerult betolteni az kintiSzek.obj modellt!\n");
         //exit(1);
         }else {
-                printf("kintiSzek betoltve\n");
+            printf("kintiSzek betoltve\n");
+            scale_model(&(scene->kintiSzek), 5.0f, 2.0f, 3.0f); 
         }
             
     load_model(&(scene->konyvespolc), "assets/models/konyvespolc.obj");
@@ -128,7 +124,8 @@ load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
         fprintf(stderr, "Hiba: Nem sikerult betolteni az konyvespolc.obj modellt!\n");
         //exit(1);
         }else {
-                printf("konyvespolc betoltve\n");
+            printf("konyvespolc betoltve\n");
+            scale_model(&(scene->konyvespolc), 5.0f, 3.0f, 10.0f); 
         }
         
     load_model(&(scene->books), "assets/models/books.obj");
@@ -136,7 +133,9 @@ load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
         fprintf(stderr, "Hiba: Nem sikerult betolteni az books.obj modellt!\n");
         //exit(1);
         }else {
-                printf("books betoltve\n");
+            printf("books betoltve\n");
+            scale_model(&(scene->books), 1.0f, 1.0f, 0.2f); 
+
         }
         
     load_model(&(scene->regi_ora), "assets/models/regi_ora.obj");
@@ -144,7 +143,9 @@ load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
         fprintf(stderr, "Hiba: Nem sikerult betolteni az regi_ora.obj modellt!\n");
         //exit(1);
         }else {
-                printf("regiOra betoltve\n");
+            printf("regiOra betoltve\n");
+            scale_model(&(scene->regi_ora), 2.0f, 3.0f, 0.02f); 
+
         }
         
     load_model(&(scene->csillar), "assets/models/csillar.obj");
@@ -152,7 +153,9 @@ load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
         fprintf(stderr, "Hiba: Nem sikerult betolteni az csillar.obj modellt!\n");
         //exit(1);
         }else {
-                printf("csillar betoltve\n");
+            printf("csillar betoltve\n");
+            scale_model(&(scene->csillar), 2.5f, 2.5f, 0.02f); 
+
         }
         
    
@@ -227,6 +230,8 @@ load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
         if (scene->szonyeg_texture == 0) {
             fprintf(stderr, "Hiba:szonyeg textúra betöltése sikertelen.\n");
             //exit(1);
+            }else {
+                printf("szonyeg.png betoltve\n");
             }
     
     scene->fal_texture = load_texture("assets/textures/fal.png");
@@ -283,34 +288,7 @@ load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
             //exit(1);
             }else {
                 printf("eg.png betoltve\n");
-            }
-
-    // Textúrák hozzárendelése a modellekhez
-    scene->ajtofelfa.material.ajtob_texture = scene->ajtob_texture;
-    scene->ajtolap.material.ajto_texture = scene->ajto_texture;    
-    
-    scene->asztal_lap.material.fa2_texture = scene->fa2_texture;    
-    scene->asztal_lab.material.fa2_texture = scene->fa2_texture;    
-    
-    scene->szek_teteje.material.szek_texture = scene->szek_texture;    
-    scene->szek_alj.material.barna_texture = scene->barna_texture;    
-    
-    scene->szonyeg.material.szonyeg_texture = scene->szonyeg_texture;    
-    
-    scene->kek_pufika.material.kek_texture = scene->kek_texture;   
-    
-    scene->kintiSzek.material.fa4_texture = scene->fa4_texture;    
-    
-    scene->konyvespolc.material.fa1_texture = scene->fa1_texture;    
-    
-    scene->regi_ora.material.fa3_texture = scene->fa3_texture;    
-    
-    scene->csillar.material.csillar_texture = scene->csillar_texture;  
-
-    scene->books.material.book_texture = scene->book_texture;  
-
-    scene->szoba.material.fal_texture = scene->fal_texture;    
-    scene->tetoCsapott.material.cserep_texture = scene->cserep_texture;    
+            }  
 
     glEnable(GL_TEXTURE_2D);
 
@@ -381,99 +359,138 @@ void update_scene(Scene* scene){
     (void)scene;
 }
 
-void render_scene(const Scene* scene){
-//printf("Szoba haromszogek: %d\n", scene->szoba.n_triangles);
-//printf("render_scene() meghívva\n");
-
+void render_scene(const Scene* scene)
+{
+// Alap beállítások
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
+    glEnable(GL_TEXTURE_2D);
 
-    set_material(&(scene->material));
+    set_material(&scene->material);
     set_lighting();
 
-    //draw_background(scene->eg_background_texture);
-
-//SZOBA   
+// Szoba
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, 0.0f);  // Alap pozíció
-    glRotatef(90, 0, 0, 1);          // 90 fokkal elfordítjuk, hogy a nyitott oldal jobbra essen
-    draw_model(&(scene->szoba));
+    glTranslatef(0.0f, 0.0f, 0.0f); 
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    glBindTexture(GL_TEXTURE_2D, scene->fal_texture);
+    draw_model(&scene->szoba);
     glPopMatrix();
-//TETŐ  
+// Tető
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, 15.0f);   // szobÁVAL MEGEGGYEZŐ magasság
-    draw_model(&(scene->tetoCsapott));
-    glPopMatrix();
-//AJTÓ FÉLFA
-    glPushMatrix();
-    glTranslatef(5.0f, 0.0f, 0.0f); 
-    draw_model(&(scene->ajtofelfa));
-    glPopMatrix();
-//AJTÓ LAP
-    glPushMatrix();
-    glTranslatef(5.0f, 0.0f, 0.0f); 
-    glRotatef(ajto_angle, 0, 0, 1); 
-    draw_model(&(scene->ajtolap));
-    glPopMatrix();
-//ASZTAL LAB
-    glPushMatrix();
-    glTranslatef(0.0f, 0.0f, 0.0f); // alap pozícióban, padlóra
-    draw_model(&(scene->asztal_lab));
-    glPopMatrix();
-//ASZLTAL LAP
-    glPushMatrix();
-    glTranslatef(0.0f, 0.0f, 1.0f); // a lap 1 egységgel magasabban van
-    draw_model(&(scene->asztal_lap));
+    glTranslatef(0.0f, 0.0f, 15.0f);  // A szoba tetején
+    glBindTexture(GL_TEXTURE_2D, scene->cserep_texture);
+    draw_model(&scene->tetoCsapott);
     glPopMatrix();
 
-// SZÉKEK:!!!
- // 6 szék körben, 3.5 sugarú kör mentén, arányosan az asztalhoz
-     float radius = 3.5f;
-     for (int i = 0; i < 6; i++) {
-         float angle = i * 60.0f * (M_PI / 180.0f);
-         float x = radius * cos(angle);
-         float y = radius * sin(angle);
-    //SZÉK TETEJE    
-        glPushMatrix();
-        glTranslatef(x, y, 0.5f); // teteje az alj tetejére
-        glRotatef(-i * 60.0f, 0, 0, 1);
-        draw_model(&(scene->szek_teteje));
-        glPopMatrix();
-    //SZEK ALJA
+// Ajtó félfa
+    glPushMatrix();
+    glTranslatef(7.5f, -10.0f, 0.0f);  // jobb széle a szobának
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);  // Az ajtó jobbra nézzen
+    glBindTexture(GL_TEXTURE_2D, scene->ajtob_texture);
+    draw_model(&scene->ajtofelfa);
+    glPopMatrix();
+
+// Ajtó lap
+    glPushMatrix();
+    glTranslatef(7.5f, -10.0f, 0.0f);  // Ugyanoda mint a félfa
+    glRotatef(ajto_angle, 0.0f, 0.0f, 1.0f);  // Ajtó nyitása
+    glBindTexture(GL_TEXTURE_2D, scene->ajto_texture);
+    draw_model(&scene->ajtolap);
+    glPopMatrix();
+
+// Asztal lap
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 0.0f); // Középen
+    glBindTexture(GL_TEXTURE_2D, scene->fa2_texture);
+    draw_model(&scene->asztal_lap);
+    glPopMatrix();
+
+// Asztal láb
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, -0.5f); // Asztalláb lejjebb
+    glBindTexture(GL_TEXTURE_2D, scene->fa2_texture);
+    draw_model(&scene->asztal_lab);
+    glPopMatrix();
+
+// Székek (6 db körben)
+    float radius = 3.5f;
+    for (int i = 0; i < 6; i++) {
+        float angle = i * 60.0f * (M_PI / 180.0f);
+        float x = radius * cos(angle);
+        float y = radius * sin(angle);
+
+    // Szék alja
         glPushMatrix();
         glTranslatef(x, y, 0.0f);
         glRotatef(-i * 60.0f, 0, 0, 1);
-        draw_model(&(scene->szek_alj));
+        glBindTexture(GL_TEXTURE_2D, scene->barna_texture);
+        draw_model(&scene->szek_alj);
         glPopMatrix();
-     }
-//SZŐNYEG
+
+    // Szék teteje
+        glPushMatrix();
+        glTranslatef(x, y, 0.5f);
+        glRotatef(-i * 60.0f, 0, 0, 1);
+        glBindTexture(GL_TEXTURE_2D, scene->szek_texture);
+        draw_model(&scene->szek_teteje);
+        glPopMatrix();
+    }
+
+// Szőnyeg
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, 0.01f);
-    draw_model(&(scene->szonyeg));
+    glTranslatef(0.0f, 0.0f, 0.01f);  // A padlóra, picit megemelve
+    glBindTexture(GL_TEXTURE_2D, scene->szonyeg_texture);
+    draw_model(&scene->szonyeg);
+    glPopMatrix();
+
+// Kek pufika
+    glPushMatrix();
+    glTranslatef(-5.5f, 5.5f, 0.0f);  // Könyvespolc mellett
+    glBindTexture(GL_TEXTURE_2D, scene->kek_texture);
+    draw_model(&scene->kek_pufika);
+    glPopMatrix();
+
+// Kinti szék - a bejárattal szemközti fal előtt, kívül
+    glPushMatrix();
+    glTranslatef(0.0f, 10.5f, 0.0f); // Fal elé tesszük Y irányban
+    glBindTexture(GL_TEXTURE_2D, scene->fa4_texture);
+    draw_model(&scene->kintiSzek);
+    glPopMatrix();;
+
+// Könyvespolc
+    glPushMatrix();
+    glTranslatef(-7.5f, 7.5f, 0.0f);  // 
+    glBindTexture(GL_TEXTURE_2D, scene->fa1_texture);
+    draw_model(&scene->konyvespolc);
+    glPopMatrix();
+
+// Könyvek a polcon
+    glPushMatrix();
+    glTranslatef(-7.5f, 7.5f, 0.2f);  // Ugyanaz a pozíció, de kicsit kijjebb a Z-tengely mentén
+    glBindTexture(GL_TEXTURE_2D, scene->book_texture);
+    draw_model(&scene->books);
     glPopMatrix();
 
 
-
-
+// Régi óra
     glPushMatrix();
-    draw_model(&(scene->kek_pufika));
+    glTranslatef(0.0f, 9.9f, 5.0f);  // X = 0 (középre), Y = 9.9 (a fal előtt), Z = 5 (magasság)
+    glRotatef(180.0f, 0.0f, 0.0f, 1.0f);  // Ha háttal lenne, megfordítás
+    glBindTexture(GL_TEXTURE_2D, scene->fa3_texture);
+    draw_model(&scene->regi_ora);
     glPopMatrix();
 
+// Csillár
     glPushMatrix();
-    draw_model(&(scene->kintiSzek));
+    glTranslatef(0.0f, 0.0f, 13.5f); // Lefelé lóg 1.5 egységgel a plafontól (15.0 - 1.5)
+    glRotatef(180.0f, 1.0f, 0.0f, 0.0f);  // Fordítsuk meg Z tengely mentén
+    glBindTexture(GL_TEXTURE_2D, scene->csillar_texture);
+    draw_model(&scene->csillar);
     glPopMatrix();
 
-    glPushMatrix();
-    draw_model(&(scene->konyvespolc));
-    glPopMatrix();
-
-    glPushMatrix();
-    draw_model(&(scene->regi_ora));
-    glPopMatrix();
-
-  
+    
 }
-
 
  void toggle_ajto() {
      if (!ajto_nyitva) {

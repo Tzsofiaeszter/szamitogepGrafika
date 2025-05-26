@@ -4,11 +4,14 @@
 #include "model.h"
 #include "light.h"
 #include "utils.h"
+#include "camera.h"
+#include <stdbool.h>
 
 typedef struct Scene{
   Material material;
   Light light;
-
+  
+  Model szoba;
   Model ajtofelfa;
   Model ajtolap;
   Model asztal_lap;
@@ -20,7 +23,6 @@ typedef struct Scene{
   Model kintiSzek;
   Model konyvespolc;
   Model regi_ora;
-  Model szoba;
   Model tetoCsapott;
   Model books;
   Model csillar;
@@ -43,7 +45,7 @@ typedef struct Scene{
   GLuint segedkepernyo_texture;
   GLuint eg_background_texture;
 
-  bool show_help;
+  bool help;
   float platform_scale_z;
 
 } Scene;

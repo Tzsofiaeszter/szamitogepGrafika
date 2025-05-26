@@ -4,41 +4,20 @@
 #include <stdio.h>
 
 void draw_model(const Model* model){
-    printf("Rajzolas indult.\n");
-    
-    GLuint tex_id = 0;
-
-    if (model->material.fa1_texture) tex_id = model->material.fa1_texture;
-    else if (model->material.fa2_texture) tex_id = model->material.fa2_texture;
-    else if (model->material.fa3_texture) tex_id = model->material.fa3_texture;
-    else if (model->material.fa4_texture) tex_id = model->material.fa4_texture;
-    else if (model->material.szek_texture) tex_id = model->material.szek_texture;
-    else if (model->material.ajto_texture) tex_id = model->material.ajto_texture;
-    else if (model->material.ajtob_texture) tex_id = model->material.ajtob_texture;
-    else if (model->material.barna_texture) tex_id = model->material.barna_texture;
-    else if (model->material.szonyeg_texture) tex_id = model->material.szonyeg_texture;
-    else if (model->material.kek_texture) tex_id = model->material.kek_texture;
-    else if (model->material.fal_texture) tex_id = model->material.fal_texture;
-    else if (model->material.cserep_texture) tex_id = model->material.cserep_texture;
-    else if (model->material.book_texture) tex_id = model->material.book_texture;
-    else if (model->material.csillar_texture) tex_id = model->material.csillar_texture;
-
-    if (tex_id != 0) {
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, tex_id);
-    } else {
-        glDisable(GL_TEXTURE_2D); // ha nincs textúra
-    }
-
     draw_triangles(model);
-
-    glDisable(GL_TEXTURE_2D);
 }
 
+
 void draw_triangles(const Model* model) {
+    printf(">> draw_triangles() meghivva\n");
+
     int i, k;
     int vertex_index, texture_index, normal_index;
     float x, y, z, u, v;
+
+
+     glDisable(GL_LIGHTING); // <--- világítás ki
+    glColor3f(1.0f, 0.0f, 0.0f); // piros
 
     glBegin(GL_TRIANGLES);
 
