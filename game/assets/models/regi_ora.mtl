@@ -1,0 +1,63 @@
+# Blender 4.4.1 MTL File: 'regi_ora.blend'
+# www.blender.org
+
+newmtl Clocks_tablet
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Ns C:/pendulumwallclock_Clocks_tablet_Roughness.jpg
+map_refl C:/pendulumwallclock_Clocks_tablet_Metallic.jpg
+
+newmtl Clocks_tablet.001
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 1
+map_Ns C:/Clocks_tablet_Roughness.jpg
+
+newmtl Material.001
+Ns 37.847931
+Ka 1.000000 1.000000 1.000000
+Kd 0.012161 0.012161 0.012161
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl Material.015
+Ns 960.400024
+Ka 1.000000 1.000000 1.000000
+Kd 0.750727 0.750727 0.750727
+Ks 0.278182 0.278182 0.278182
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+
+newmtl clock_majatnik
+Ka 1.000000 1.000000 1.000000
+Kd 0.692807 0.550263 0.503357
+Ks 0.161818 0.161818 0.161818
+Ke 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 3
+map_Ns C:/clock_majatnik_Roughness.jpg
+
+newmtl clock_wood
+Ka 1.000000 1.000000 1.000000
+Ks 0.201818 0.201818 0.201818
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd C:/clock_wood_Base_Color.jpg
+map_Ns C:/clock_wood_Roughness.jpg
