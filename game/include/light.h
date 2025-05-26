@@ -15,4 +15,4 @@ void init_light(Light* light);
 void set_light_brightness(Light* light, int brightness);
 void set_lighting(void);
 
-#endif // LIGHT_H
+#endif 

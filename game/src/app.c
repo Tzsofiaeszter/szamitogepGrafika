@@ -117,26 +117,22 @@ void init_opengl() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f); // Sötétszürke háttér (nem fekete)
 }
 
-void handle_app_events(App* app){
+void handle_app_events(App *app)
+{
     SDL_Event event;
     static bool is_mouse_down = false;
     static int mouse_x = 0;
     static int mouse_y = 0;
-    int x, y;
+    int x;
+    int y;
 
-    while (SDL_PollEvent(&event)) {
-        switch (event.type) {
-
-        case SDL_QUIT:
-        printf("[DEBUG] SDL_QUIT esemeny jott!\n");
-            app->is_running = false;
-            break;
-
-        case SDL_KEYDOWN: {
-            SDL_Keycode key = event.key.keysym.sym;
-            SDL_Scancode scancode = event.key.keysym.scancode;
-
-            switch (scancode) {
+    while (SDL_PollEvent(&event))
+    {
+        switch (event.type)
+        {
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.scancode)
+            {
             case SDL_SCANCODE_ESCAPE:
                 app->is_running = false;
                 break;
@@ -155,37 +151,10 @@ void handle_app_events(App* app){
             default:
                 break;
             }
-
-            // Különleges billentyűk Keycode alapján
-            switch (key) {
-            case SDLK_F1:
-                app->camera.is_preview_visible = !app->camera.is_preview_visible;
-                break;
-            case SDLK_PLUS:
-            case SDLK_KP_PLUS:
-                app->brightness += 10;
-                if (app->brightness > 255) app->brightness = 255;
-                set_light_brightness(&(app->scene.light), app->brightness);
-                break;
-            case SDLK_MINUS:
-            case SDLK_KP_MINUS:
-                app->brightness -= 10;
-                if (app->brightness < 0) app->brightness = 0;
-                set_light_brightness(&(app->scene.light), app->brightness);
-                break;
-            default:
-                break;
-            }
-
-            // Frissítsük a fény pozíciót minden kulcsnyomás után
-            glLightfv(app->scene.light.id, GL_POSITION, app->scene.light.position);
             break;
-        }
-
-        case SDL_KEYUP: {
-            SDL_Scancode scancode = event.key.keysym.scancode;
-
-            switch (scancode) {
+        case SDL_KEYUP:
+            switch (event.key.keysym.scancode)
+            {
             case SDL_SCANCODE_W:
             case SDL_SCANCODE_S:
                 set_camera_speed(&(app->camera), 0);
@@ -194,35 +163,64 @@ void handle_app_events(App* app){
             case SDL_SCANCODE_D:
                 set_camera_side_speed(&(app->camera), 0);
                 break;
+            case SDL_SCANCODE_Z:
+                set_camera_topview(&(app->camera));
+                break;
+            case SDL_SCANCODE_X:
+                set_camera_sideview(&(app->camera));
+                break;
+            case SDL_SCANCODE_Y:
+                set_camera_frontview(&(app->camera));
+                break;
+            case SDL_SCANCODE_R:
+                init_camera(&(app->camera));
+                break;
+            case SDL_SCANCODE_F1:
+                app->scene.show_help = !(app->scene.show_help);
+                break;
+            case SDL_SCANCODE_UP:
+                app->scene.platform_scale_z += 0.1f;
+                if (app->scene.platform_scale_z > 1.0f)
+                {
+                    app->scene.platform_scale_z = 1.0f;
+                }
+                break;
+            case SDL_SCANCODE_DOWN:
+                app->scene.platform_scale_z -= 0.1f;
+                if (app->scene.platform_scale_z < 0.05f)
+                {
+                    app->scene.platform_scale_z = 0.05f;
+                }
+                break;
             default:
                 break;
             }
             break;
-        }
-
         case SDL_MOUSEBUTTONDOWN:
             is_mouse_down = true;
+            SDL_GetMouseState(&mouse_x, &mouse_y);
+            
             break;
-
-        case SDL_MOUSEBUTTONUP:
-            is_mouse_down = false;
-            break;
-
         case SDL_MOUSEMOTION:
             SDL_GetMouseState(&x, &y);
-            if (is_mouse_down) {
+            if (is_mouse_down)
+            {
                 rotate_camera(&(app->camera), mouse_x - x, mouse_y - y);
             }
             mouse_x = x;
             mouse_y = y;
             break;
-
+        case SDL_MOUSEBUTTONUP:
+            is_mouse_down = false;
+            break;
+        case SDL_QUIT:
+            app->is_running = false;
+            break;
         default:
             break;
         }
     }
 }
-
 
 void reshape(GLsizei width, GLsizei height){
     int x, y, w, h;
@@ -266,28 +264,33 @@ void update_app(App* app){
 }
 
 void render_app(App* app) {
-    printf("[DEBUG] render_app() meghivva\n");
-    
+   
+   printf("[DEBUG] render_app() eleje\n");
+    // 1. Képernyő törlés (fontos az égbolt után!)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    // 2. Égbolt megjelenítése (ortho nézetben, textúra háttérként)
+    draw_background(app, app->scene.eg_background_texture);
 
-    // 1. Égbolt (háttérkép)
-    render_skybox(app);
-
-    // 2. Kamera beállítás és jelenet
+    // 3. Kamera frissítése és nézet beállítása
     glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
+    glLoadIdentity();
+    double current_time = (double)SDL_GetTicks() / 1000;
+    update_camera(&(app->camera), current_time - app->uptime);
     set_view(&(app->camera));
+
+    // 4. Jelenet renderelése (3D objektumok, világítás stb.)
+    glPushMatrix();
     render_scene(&(app->scene));
     glPopMatrix();
 
- // 3. Segédképernyő
+    // 5. Segédképernyő megjelenítése F1-re (mindent lefed)
     if (app->camera.is_preview_visible) {
         render_help_screen(app);
     }
 
+    // 6. Rajzolás befejezése és képernyő frissítése
     glFlush();
-
-    // 4. Képernyő frissítése
     SDL_GL_SwapWindow(app->window);
 
     printf("[DEBUG] render_app() vege\n");

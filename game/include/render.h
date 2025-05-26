@@ -6,6 +6,5 @@
 #include "app.h"
 
 void render_help_screen(const App* app);
-void render_skybox(const App* app);
-
+void draw_background(App* app , GLuint texture);
 #endif 

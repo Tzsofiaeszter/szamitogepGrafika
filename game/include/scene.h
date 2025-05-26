@@ -43,6 +43,9 @@ typedef struct Scene{
   GLuint segedkepernyo_texture;
   GLuint eg_background_texture;
 
+  bool show_help;
+  float platform_scale_z;
+
 } Scene;
 
 
@@ -51,5 +54,6 @@ void set_lighting();
 void set_material(const Material* material);
 void update_scene(Scene* scene);
 void render_scene(const Scene* scene);
+void toggle_ajto();
 
 #endif 

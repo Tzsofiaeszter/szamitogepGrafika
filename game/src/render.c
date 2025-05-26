@@ -3,6 +3,7 @@
 #include "app.h"
 #include "camera.h" // Szükséges a kamera rotációjának eléréséhez
 #include "scene.h"  // Szükséges a scene.segedkepernyo_texture és scene.eg_background_texture eléréséhez
+#include "texture.h"
 
 #include <SDL2/SDL.h>
 #include <GL/gl.h>          // OpenGL rendereléshez
@@ -47,9 +48,8 @@ void render_help_screen(const App* app)
     glPopMatrix();
 }
 
-void render_skybox(const App* app)
+void draw_background(App* app , GLuint texture)
 {
-    // 1. Ortho nézetre váltunk a képernyő méretéhez
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
@@ -59,16 +59,13 @@ void render_skybox(const App* app)
     glPushMatrix();
     glLoadIdentity();
 
-    // 2. Háttér: világítás, mélységi teszt kikapcsolása
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_LIGHTING);
 
-    // 3. Textúra bekapcsolás
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, app->scene.eg_background_texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glColor3f(1, 1, 1);
 
-    // 4. Teljes képernyőre kirajzolás
     glBegin(GL_QUADS);
         glTexCoord2f(0.0f, 0.0f); 
         glVertex2f(0.0f, 0.0f);
@@ -80,7 +77,6 @@ void render_skybox(const App* app)
         glVertex2f(0.0f, app->window_height);
     glEnd();
 
-    // 5. Állapot visszaállítása
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
 

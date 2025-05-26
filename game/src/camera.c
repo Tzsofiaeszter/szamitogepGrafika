@@ -3,11 +3,12 @@
 #include <GL/glu.h>
 
 #include <math.h>
+#include <stdio.h>
 
 void init_camera(Camera* camera){
-    camera->position.x = 0.0;
-    camera->position.y = 1.0;
-    camera->position.z = 5.0;
+    camera->position.x = -10.0;               // Kívülről induljon
+    camera->position.y = 0.0;
+    camera->position.z = 4.0;               // Kicsit magasabbról nézzen be
 
     camera->rotation.x = 0.0;
     camera->rotation.y = 0.0;
@@ -15,29 +16,30 @@ void init_camera(Camera* camera){
 
     camera->speed.x = 0.0;
     camera->speed.y = 0.0;
-    camera->speed.z = 0.0;
+    camera->speed.z = 0.0;          // Előre nézzen
 
     camera->is_preview_visible = false;
-
-    camera->position.x = 0.0;
-    camera->position.y = 0.0;
-    camera->position.z = 3.0;
-    camera->rotation.z = 0.0;
 
 }
 
 void update_camera(Camera* camera, double time){
-    double angle;
-    double side_angle;
+  printf("Camera pozicio: x=%.2f y=%.2f z=%.2f\n", 
+       camera->position.x, 
+       camera->position.y, 
+       camera->position.z);
 
-    angle = degree_to_radian(camera->rotation.z);
-    side_angle = degree_to_radian(camera->rotation.z + 90.0);
+  
 
-    camera->position.x += cos(angle) * camera->speed.y * time;
-    camera->position.y += sin(angle) * camera->speed.y * time;
-    camera->position.x += cos(side_angle) * camera->speed.x * time;
-    camera->position.y += sin(side_angle) * camera->speed.x * time;
+    double angle = degree_to_radian(camera->rotation.z);
+    double side_angle = degree_to_radian(camera->rotation.z + 90.0);
+
+    // Egységes 5.0-s gyorsítás minden tengelyre
+    camera->position.x += cos(angle) * camera->speed.y * time * 5.0;
+    camera->position.y += sin(angle) * camera->speed.y * time * 5.0;
+    camera->position.x += cos(side_angle) * camera->speed.x * time * 5.0;
+    camera->position.y += sin(side_angle) * camera->speed.x * time * 5.0;
 }
+
 
 void set_view(const Camera* camera) {
     glMatrixMode(GL_MODELVIEW);
@@ -111,4 +113,31 @@ void show_texture_preview(){
     glDisable(GL_COLOR_MATERIAL);
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
+}
+
+void set_camera_topview(Camera* camera) {
+    camera->position.x = 0.0f;
+    camera->position.y = 0.0f;
+    camera->position.z = 10.0f;
+
+    camera->rotation.x = 90.0f;
+    camera->rotation.z = 0.0f;
+}
+
+void set_camera_sideview(Camera* camera) {
+    camera->position.x = 10.0f;
+    camera->position.y = 0.0f;
+    camera->position.z = 4.0f;
+
+    camera->rotation.x = 0.0f;
+    camera->rotation.z = 180.0f;
+}
+
+void set_camera_frontview(Camera* camera) {
+    camera->position.x = 0.0f;
+    camera->position.y = -10.0f;
+    camera->position.z = 4.0f;
+
+    camera->rotation.x = 0.0f;
+    camera->rotation.z = 90.0f;
 }

@@ -5,72 +5,111 @@
 #include "utils.h"
 #include "texture.h"
 #include "light.h"
+#include "transform.h"
+#include "render.h"
 
 #include <stdlib.h>
+#include <stdbool.h>
+#define _USE_MATH_DEFINES
+#include <math.h> 
+
+static float ajto_angle = 0.0f;
+static bool ajto_nyitva = false;
 
 void init_scene(Scene* scene){
     if (!scene) return;
-
+//SZOBA
+    load_model(&(scene->szoba), "assets/models/szoba.obj");
+    if (scene->szoba.vertices == NULL) {
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az szoba.obj modellt!\n");
+        //exit(1);
+        }else {
+                printf("szoba betoltve\n");
+                scale_model(&(scene->szoba), 15.0, 20.0, 15.0);         // Szoba méretezése: 10 x 20 x 15
+        }
+//TETŐ
+    load_model(&(scene->tetoCsapott), "assets/models/tetoCsapott.obj");
+    if (scene->tetoCsapott.vertices == NULL) {
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az ajtofelfa.obj modellt!\n");
+        //exit(1);
+        }else {
+                printf("teto betoltve\n");
+                scale_model(&(scene->tetoCsapott), 15.0, 20.0, 4.0);   // Méretre állítás: 10 x 20 x 4
+        }
+//AJTÓ FÉLFA
     load_model(&(scene->ajtofelfa), "assets/models/ajtofelfa.obj");
-        if (scene->ajtofelfa.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az ajtofelfa.obj modellt!\n");
-        //exit(1);
-        }else {
+            if (scene->ajtofelfa.vertices == NULL) {
+            fprintf(stderr, "Hiba: Nem sikerult betolteni az ajtofelfa.obj modellt!\n");
+            //exit(1);
+            }else {
                 printf("ajtofelfa betoltve\n");
-        }
-        
+                scale_model(&(scene->ajtofelfa), 3.0, 0.2, 15.0);
+            }
+//AJTÓ LAP
     load_model(&(scene->ajtolap), "assets/models/ajtolap.obj");
-    if (scene->ajtolap.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az ajtolap.obj modellt!\n");
-        //exit(1);
-        }else {
+        if (scene->ajtolap.vertices == NULL) {
+            fprintf(stderr, "Hiba: Nem sikerult betolteni az ajtolap.obj modellt!\n");
+            //exit(1);
+            }else {
                 printf("ajtolap betoltve\n");
-        }
-        
-    
-    load_model(&(scene->asztal_lap), "assets/models/asztal_lap.obj");
+                scale_model(&(scene->ajtolap), 3.0, 0.2, 15.0);
+            }
+//ASZTAL LAP
+load_model(&(scene->asztal_lap), "assets/models/asztal_lap.obj");
     if (scene->asztal_lap.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az asztal_lap.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az asztal_lap.obj modellt!\n");
         //exit(1);
         }else {
-                printf("asztalLap betoltve\n");
+            printf("asztalLap betoltve\n");
+            scale_model(&(scene->asztal_lap), 4.0f, 2.0f, 0.3f);
         }
-        
-    load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
+//ASZTAL LAB
+load_model(&(scene->asztal_lab), "assets/models/asztal_lab.obj");
     if (scene->asztal_lab.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az asztal_lab.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az asztal_lab.obj modellt!\n");
         //exit(1);
         }else {
-                printf("asztalLab betoltve\n");
+            printf("asztalLab betoltve\n");
+            scale_model(&(scene->asztal_lab), 1.5f, 1.5f, 1.0f);
         }
-    
-    load_model(&(scene->szek_teteje), "assets/models/szek_teteje.obj");
+//SZÉK TETEJE
+ load_model(&(scene->szek_teteje), "assets/models/szek_teteje.obj");
     if (scene->szek_teteje.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az szek-teteje.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az szek-teteje.obj modellt!\n");
         //exit(1);
         }else {
-                printf("szekTeteje betoltve\n");
+            printf("szekTeteje betoltve\n");
+            scale_model(&(scene->szek_teteje), 1.0f, 1.0f, 0.7f);
+
         }
-        
-    load_model(&(scene->szek_alj), "assets/models/szek_alj.obj");
+
+//SZÉK ALJA            
+     load_model(&(scene->szek_alj), "assets/models/szek_alj.obj");
     if (scene->szek_alj.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az szek_alj.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az szek_alj.obj modellt!\n");
         //exit(1);
         }else {
-                printf("szekAlja betoltve\n");
+            printf("szekAlja betoltve\n");
+            scale_model(&(scene->szek_alj), 1.0f, 1.0f, 0.5f);
         }
-        
-    load_model(&(scene->szonyeg), "assets/models/szonyeg.obj");
+//SZŐNYEG        
+     load_model(&(scene->szonyeg), "assets/models/szonyeg.obj");
     if (scene->szonyeg.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az szonyeg.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az szonyeg.obj modellt!\n");
        //exit(1);
         }else {
-                printf("szonyeg betoltve\n");
+            printf("szonyeg betoltve\n");
+            scale_model(&(scene->szonyeg), 19.0f, 14.0f, 0.02f);           // szoba méretéből 1-1 egységgel kisebb
         }
         
+
+
+
+
+
     load_model(&(scene->kek_pufika), "assets/models/kek_pufika.obj");
     if (scene->kek_pufika.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az kek_pufika.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az kek_pufika.obj modellt!\n");
         //xit(1);
         }else {
                 printf("pufika betoltve\n");
@@ -78,7 +117,7 @@ void init_scene(Scene* scene){
         
     load_model(&(scene->kintiSzek), "assets/models/kintiSzek.obj");
     if (scene->kintiSzek.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az kintiSzek.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az kintiSzek.obj modellt!\n");
         //exit(1);
         }else {
                 printf("kintiSzek betoltve\n");
@@ -86,7 +125,7 @@ void init_scene(Scene* scene){
             
     load_model(&(scene->konyvespolc), "assets/models/konyvespolc.obj");
     if (scene->konyvespolc.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az konyvespolc.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az konyvespolc.obj modellt!\n");
         //exit(1);
         }else {
                 printf("konyvespolc betoltve\n");
@@ -94,7 +133,7 @@ void init_scene(Scene* scene){
         
     load_model(&(scene->books), "assets/models/books.obj");
     if (scene->books.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az books.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az books.obj modellt!\n");
         //exit(1);
         }else {
                 printf("books betoltve\n");
@@ -102,7 +141,7 @@ void init_scene(Scene* scene){
         
     load_model(&(scene->regi_ora), "assets/models/regi_ora.obj");
     if (scene->regi_ora.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az regi_ora.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az regi_ora.obj modellt!\n");
         //exit(1);
         }else {
                 printf("regiOra betoltve\n");
@@ -110,27 +149,13 @@ void init_scene(Scene* scene){
         
     load_model(&(scene->csillar), "assets/models/csillar.obj");
     if (scene->csillar.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az csillar.obj modellt!\n");
+        fprintf(stderr, "Hiba: Nem sikerult betolteni az csillar.obj modellt!\n");
         //exit(1);
         }else {
                 printf("csillar betoltve\n");
         }
         
-    load_model(&(scene->szoba), "assets/models/szoba.obj");
-    if (scene->szoba.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az szoba.obj modellt!\n");
-        //exit(1);
-        }else {
-                printf("szoba betoltve\n");
-        }
-
-    load_model(&(scene->tetoCsapott), "assets/models/tetoCsapott.obj");
-    if (scene->tetoCsapott.vertices == NULL) {
-        fprintf(stderr, "Hiba: Nem sikerült betölteni az ajtofelfa.obj modellt!\n");
-        //exit(1);
-        }else {
-                printf("teto betoltve\n");
-        }
+   
         
 
 
@@ -287,6 +312,7 @@ void init_scene(Scene* scene){
     scene->szoba.material.fal_texture = scene->fal_texture;    
     scene->tetoCsapott.material.cserep_texture = scene->cserep_texture;    
 
+    glEnable(GL_TEXTURE_2D);
 
     /*scene->material.ambient.red = 0.0;
     scene->material.ambient.green = 0.0;
@@ -356,44 +382,78 @@ void update_scene(Scene* scene){
 }
 
 void render_scene(const Scene* scene){
-
-printf("Szoba háromszögek: %d\n", scene->szoba.n_triangles);
-
-    printf("render_scene() meghívva\n");
+//printf("Szoba haromszogek: %d\n", scene->szoba.n_triangles);
+//printf("render_scene() meghívva\n");
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
 
     set_material(&(scene->material));
     set_lighting();
-   
+
+    //draw_background(scene->eg_background_texture);
+
+//SZOBA   
     glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 0.0f);  // Alap pozíció
+    glRotatef(90, 0, 0, 1);          // 90 fokkal elfordítjuk, hogy a nyitott oldal jobbra essen
+    draw_model(&(scene->szoba));
+    glPopMatrix();
+//TETŐ  
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 15.0f);   // szobÁVAL MEGEGGYEZŐ magasság
+    draw_model(&(scene->tetoCsapott));
+    glPopMatrix();
+//AJTÓ FÉLFA
+    glPushMatrix();
+    glTranslatef(5.0f, 0.0f, 0.0f); 
     draw_model(&(scene->ajtofelfa));
     glPopMatrix();
-
+//AJTÓ LAP
     glPushMatrix();
+    glTranslatef(5.0f, 0.0f, 0.0f); 
+    glRotatef(ajto_angle, 0, 0, 1); 
     draw_model(&(scene->ajtolap));
     glPopMatrix();
-
+//ASZTAL LAB
     glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 0.0f); // alap pozícióban, padlóra
+    draw_model(&(scene->asztal_lab));
+    glPopMatrix();
+//ASZLTAL LAP
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 1.0f); // a lap 1 egységgel magasabban van
     draw_model(&(scene->asztal_lap));
     glPopMatrix();
 
+// SZÉKEK:!!!
+ // 6 szék körben, 3.5 sugarú kör mentén, arányosan az asztalhoz
+     float radius = 3.5f;
+     for (int i = 0; i < 6; i++) {
+         float angle = i * 60.0f * (M_PI / 180.0f);
+         float x = radius * cos(angle);
+         float y = radius * sin(angle);
+    //SZÉK TETEJE    
+        glPushMatrix();
+        glTranslatef(x, y, 0.5f); // teteje az alj tetejére
+        glRotatef(-i * 60.0f, 0, 0, 1);
+        draw_model(&(scene->szek_teteje));
+        glPopMatrix();
+    //SZEK ALJA
+        glPushMatrix();
+        glTranslatef(x, y, 0.0f);
+        glRotatef(-i * 60.0f, 0, 0, 1);
+        draw_model(&(scene->szek_alj));
+        glPopMatrix();
+     }
+//SZŐNYEG
     glPushMatrix();
-    draw_model(&(scene->asztal_lab));
-    glPopMatrix();
-    
-    glPushMatrix();
-    draw_model(&(scene->szek_teteje));
-    glPopMatrix();
-
-    glPushMatrix();
-    draw_model(&(scene->szek_alj));
-    glPopMatrix();
-
-    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 0.01f);
     draw_model(&(scene->szonyeg));
     glPopMatrix();
+
+
+
 
     glPushMatrix();
     draw_model(&(scene->kek_pufika));
@@ -411,11 +471,17 @@ printf("Szoba háromszögek: %d\n", scene->szoba.n_triangles);
     draw_model(&(scene->regi_ora));
     glPopMatrix();
 
-    glPushMatrix();
-    draw_model(&(scene->szoba));
-    glPopMatrix();
-
-    glPushMatrix();
-    draw_model(&(scene->tetoCsapott));
-    glPopMatrix();
+  
 }
+
+
+ void toggle_ajto() {
+     if (!ajto_nyitva) {
+         ajto_angle = 90.0f;        // Ajtó nyitása 90 fokra
+         ajto_nyitva = true;
+     } else {
+         ajto_angle = 0.0f;          // Ajtó bezárása
+         ajto_nyitva = false;
+     }
+ }
+     
