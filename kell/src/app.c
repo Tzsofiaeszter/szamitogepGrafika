@@ -127,6 +127,14 @@ void handle_app_events(App* app)
             case SDL_SCANCODE_D:
                 set_camera_side_speed(&(app->camera), -1);
                 break;
+            case SDL_SCANCODE_L:  // Például az L betű kapcsolja a világítást
+                app->scene.lighting_enabled = !app->scene.lighting_enabled;
+                if (app->scene.lighting_enabled) {
+                    glEnable(GL_LIGHTING);
+                } else {
+                    glDisable(GL_LIGHTING);
+                }
+                break;
             default:
                 break;
             }

@@ -7,8 +7,14 @@
 void init_scene(Scene* scene)
 {
     load_model(&(scene->szoba), "assets/models/szoba.obj");
-        load_model(&(scene->asztalka), "assets/models/asztalka.obj");
+    load_model(&(scene->asztalka), "assets/models/asztalka.obj");
+    load_model(&(scene->szonyegke), "assets/models/szonyegke.obj");
+    load_model(&(scene->csillarka), "assets/models/csillarka.obj");
+    load_model(&(scene->szek), "assets/models/szek.obj");
+    load_model(&(scene->konyvespolc), "assets/models/konyvespolc.obj");
 
+
+    
     //scene->texture_id = load_texture("assets/textures/fal.png");
     //scene->texture_id = load_texture("assets/textures/csillar.png");
 
@@ -28,6 +34,9 @@ void init_scene(Scene* scene)
     scene->material.specular.blue = 0.0;
 
     scene->material.shininess = 0.0;
+
+    scene->lighting_enabled = true;
+
 }
 
 void set_lighting()
@@ -74,24 +83,57 @@ void update_scene(Scene* scene)
 {
 }
 
-void render_scene(const Scene* scene)
-{
+void render_scene(const Scene* scene){
 
     set_material(&(scene->material));
     set_lighting();
-    draw_origin();
+    //draw_origin();
 
-    draw_model(&(scene->szoba));
-    
     glPushMatrix();
-    glTranslatef(0.0f, 0.0f, -2.0f);  
+    draw_model(&(scene->szoba));
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0.5f, 0.25f, 0.1f);
+    glTranslatef(0.0f, 0.0f, -1.8f);  
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     draw_model(&(scene->asztalka));
     glPopMatrix();
 
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, -1.98f);  
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    draw_model(&(scene->szonyegke));
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0f, 0.0f, 1.8f);  
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    draw_model(&(scene->csillarka));
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-1.0f, -1.0f, -1.95f);  
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    draw_model(&(scene->szek));
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-1.0f, 0.5f, -1.95f);  
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
+    draw_model(&(scene->szek));
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-1.5f, 1.0f, -1.95f);  
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    draw_model(&(scene->konyvespolc));
+    glPopMatrix();
+
 }
 
-void draw_origin()
+/*void draw_origin()
 {
     glBegin(GL_LINES);
 
@@ -108,4 +150,4 @@ void draw_origin()
     glVertex3f(0, 0, 1);
 
     glEnd();
-}
+}*/

@@ -13,21 +13,21 @@ void draw_triangles(const Model* model)
     int vertex_index, texture_index, normal_index;
     float x, y, z, u, v;
 
-    // Hat különböző szín (ismétlődnek 6 után)
-    float colors[6][3] = {
+   // Hat különböző szín (ismétlődnek 6 után)
+    float colors[3][3] = {
         {1.0f, 0.0f, 0.0f},  // piros
         {0.0f, 1.0f, 0.0f},  // zöld
         {0.0f, 0.0f, 1.0f},  // kék
-        {1.0f, 1.0f, 0.0f},  // sárga
-        {1.0f, 0.0f, 1.0f},  // lila
-        {0.0f, 1.0f, 1.0f}   // cián
+        //{1.0f, 1.0f, 0.0f},  // sárga
+        //{1.0f, 0.0f, 1.0f},  // lila
+        //{0.0f, 1.0f, 1.0f}   // cián
     };
 
     glBegin(GL_TRIANGLES);
 
     for (i = 0; i < model->n_triangles; ++i) {
         // Ismétlődő színek: 0–5 között
-        int color_index = i % 6;
+        int color_index = i % 3;
         glColor3f(
             colors[color_index][0],
             colors[color_index][1],

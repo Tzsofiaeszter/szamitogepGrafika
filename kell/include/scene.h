@@ -6,12 +6,23 @@
 
 #include <model.h>
 
+#include <stdbool.h>
+
 typedef struct Scene
 {
     Model szoba;
     Model asztalka;
+    Model szonyegke;
+    Model csillarka;
+    Model szek;
+    Model konyvespolc;
+
+
     Material material;
     GLuint texture_id;
+
+    bool lighting_enabled;
+
 } Scene;
 
 /**
