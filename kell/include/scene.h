@@ -15,7 +15,9 @@ typedef struct Scene{
     Model csillarka;
     Model szek;
     Model konyvespolc;
-
+    Model book1;
+    Model book2;
+    
     Material material;
 
     GLuint fal_texture_id;   // szoba
@@ -25,7 +27,8 @@ typedef struct Scene{
     GLuint szek_texture_id;  // szék
     GLuint kek_texture_id;          //szőnyeg
     GLuint csillar_texture_id;// csillár
-
+    GLuint book1_texture_id;
+    GLuint book2_texture_id;
 
     GLuint help_texture_id;
 

@@ -151,42 +151,42 @@ void handle_app_events(App* app){
 
             // --- Szek1 mozgatás (bal szék)
             case SDL_SCANCODE_T:
-                move_szek1(&(app->scene), 0.0f, 0.1f, 0.0f); // fel
+                move_szek1(&(app->scene), 0.0f, 0.1f, 0.0f); // jobb
                 break;
             case SDL_SCANCODE_G:
-                move_szek1(&(app->scene), 0.0f, -0.1f, 0.0f); // le
+                move_szek1(&(app->scene), 0.0f, -0.1f, 0.0f); // bal
                 break;
             case SDL_SCANCODE_F:
-                move_szek1(&(app->scene), -0.1f, 0.0f, 0.0f); // balra
+                move_szek1(&(app->scene), -0.1f, 0.0f, 0.0f); // hátra
                 break;
             case SDL_SCANCODE_E:
-                move_szek1(&(app->scene), 0.1f, 0.0f, 0.0f); // jobbra
+                move_szek1(&(app->scene), 0.1f, 0.0f, 0.0f); // előre
                 break;
             case SDL_SCANCODE_R:
-                move_szek1(&(app->scene), 0.0f, 0.0f, 0.1f); // előre
+                move_szek1(&(app->scene), 0.0f, 0.0f, 0.1f); // fel
                 break;
-            case SDL_SCANCODE_Y:
-                move_szek1(&(app->scene), 0.0f, 0.0f, -0.1f); // hátra
+            case SDL_SCANCODE_Z:
+                move_szek1(&(app->scene), 0.0f, 0.0f, -0.1f); // le
                 break;
 
             // --- Szek2 mozgatás (jobb szék)
             case SDL_SCANCODE_I:
-                move_szek2(&(app->scene), 0.0f, 0.1f, 0.0f); // fel
+                move_szek2(&(app->scene), 0.0f, 0.1f, 0.0f); // jobb
                 break;
             case SDL_SCANCODE_K:
-                move_szek2(&(app->scene), 0.0f, -0.1f, 0.0f); // le
+                move_szek2(&(app->scene), 0.0f, -0.1f, 0.0f); // bal
                 break;
             case SDL_SCANCODE_J:
-                move_szek2(&(app->scene), -0.1f, 0.0f, 0.0f); // balra
+                move_szek2(&(app->scene), -0.1f, 0.0f, 0.0f); // hátra
                 break;
             case SDL_SCANCODE_M:
-                move_szek2(&(app->scene), 0.1f, 0.0f, 0.0f); // jobbra (nem L!)
+                move_szek2(&(app->scene), 0.1f, 0.0f, 0.0f); // előre
                 break;
             case SDL_SCANCODE_U:
-                move_szek2(&(app->scene), 0.0f, 0.0f, 0.1f); // előre
+                move_szek2(&(app->scene), 0.0f, 0.0f, 0.1f); // fel
                 break;
             case SDL_SCANCODE_O:
-                move_szek2(&(app->scene), 0.0f, 0.0f, -0.1f); // hátra
+                move_szek2(&(app->scene), 0.0f, 0.0f, -0.1f); // le
                 break;
 
             default:

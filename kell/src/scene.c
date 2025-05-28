@@ -29,6 +29,11 @@ void init_scene(Scene* scene){
     load_model(&(scene->konyvespolc), "assets/models/konyvespolc.obj");
     scene->fa0_texture_id = load_texture("assets/textures/fa0.png");
 
+    load_model(&(scene->book1), "assets/models/book1.obj");
+    scene->book1_texture_id = load_texture("assets/textures/book1.png");
+
+    load_model(&(scene->book2), "assets/models/book2.obj");
+    scene->book2_texture_id = load_texture("assets/textures/book2.png");
 
     //load_model(&(scene->pufika), "assets/models/pufika.obj");
     //scene->kek_texture_id = load_texture("assets/textures/kek.png");
@@ -179,10 +184,27 @@ set_lighting(scene);
 
     glPushMatrix();
     glBindTexture(GL_TEXTURE_2D, scene->fa0_texture_id); 
-    glTranslatef(-1.5f, 1.0f, -1.95f);  
+    glTranslatef(-1.5f, 1.0f, -1.98f);  
     glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
     draw_model(&(scene->konyvespolc));
+    glPopMatrix();
+
+
+    glPushMatrix();
+    glBindTexture(GL_TEXTURE_2D, scene->book1_texture_id); 
+    glTranslatef(-1.0f, 1.5f, -1.0f);  
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    draw_model(&(scene->book1));
+    glPopMatrix();
+
+    glPushMatrix();
+    glBindTexture(GL_TEXTURE_2D, scene->book2_texture_id); 
+    glTranslatef(-1.9f, 1.0f, -1.4f);  
+    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+    glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
+    draw_model(&(scene->book2));
     glPopMatrix();
 
 }
