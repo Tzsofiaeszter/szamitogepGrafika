@@ -1,9 +1,12 @@
 #include "app.h"
+#include "scene.h"
+#include "camera.h"
+
+#include <stdio.h>
 
 #include <SDL2/SDL_image.h>
 
-void init_app(App* app, int width, int height)
-{
+void init_app(App* app, int width, int height){
     int error_code;
     int inited_loaders;
 
@@ -16,7 +19,7 @@ void init_app(App* app, int width, int height)
     }
 
     app->window = SDL_CreateWindow(
-        "Cube!",
+        "Game!",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         width, height,
         SDL_WINDOW_OPENGL);
@@ -46,8 +49,7 @@ void init_app(App* app, int width, int height)
     app->is_running = true;
 }
 
-void init_opengl()
-{
+void init_opengl(){
     glShadeModel(GL_SMOOTH);
 
     glEnable(GL_NORMALIZE);
@@ -70,8 +72,7 @@ void init_opengl()
     glEnable(GL_LIGHT0);
 }
 
-void reshape(GLsizei width, GLsizei height)
-{
+void reshape(GLsizei width, GLsizei height){
     int x, y, w, h;
     double ratio;
 
@@ -99,8 +100,7 @@ void reshape(GLsizei width, GLsizei height)
     );
 }
 
-void handle_app_events(App* app)
-{
+void handle_app_events(App* app){
     SDL_Event event;
     static bool is_mouse_down = false;
     static int mouse_x = 0;
@@ -127,13 +127,24 @@ void handle_app_events(App* app)
             case SDL_SCANCODE_D:
                 set_camera_side_speed(&(app->camera), -1);
                 break;
-            case SDL_SCANCODE_L:  // Például az L betű kapcsolja a világítást
+            case SDL_SCANCODE_L:                                                 //  az L betű kapcsolja a világítást
                 app->scene.lighting_enabled = !app->scene.lighting_enabled;
                 if (app->scene.lighting_enabled) {
                     glEnable(GL_LIGHTING);
                 } else {
                     glDisable(GL_LIGHTING);
                 }
+                break;
+            
+            case SDL_SCANCODE_KP_PLUS:
+            case SDL_SCANCODE_EQUALS:  // + gomb
+                app->scene.light_intensity += 0.1f;
+                if (app->scene.light_intensity > 1.0f) app->scene.light_intensity = 1.0f;
+            break;
+            case SDL_SCANCODE_KP_MINUS:
+            case SDL_SCANCODE_MINUS:
+                app->scene.light_intensity -= 0.1f;
+                if (app->scene.light_intensity < 0.0f) app->scene.light_intensity = 0.0f;
                 break;
             default:
                 break;
@@ -149,6 +160,11 @@ void handle_app_events(App* app)
             case SDL_SCANCODE_D:
                 set_camera_side_speed(&(app->camera), 0);
                 break;
+            case SDL_SCANCODE_H:
+                app->scene.show_help = !app->scene.show_help;
+                break;
+
+
             default:
                 break;
             }
@@ -176,8 +192,7 @@ void handle_app_events(App* app)
     }
 }
 
-void update_app(App* app)
-{
+void update_app(App* app){
     double current_time;
     double elapsed_time;
 
@@ -189,8 +204,7 @@ void update_app(App* app)
     update_scene(&(app->scene));
 }
 
-void render_app(App* app)
-{
+void render_app(App* app){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
 
@@ -203,11 +217,15 @@ void render_app(App* app)
         show_texture_preview();
     }
 
-    SDL_GL_SwapWindow(app->window);
+
+if (app->scene.show_help) {
+    render_help_overlay(&(app->scene));
 }
 
-void destroy_app(App* app)
-{
+SDL_GL_SwapWindow(app->window);
+}
+
+void destroy_app(App* app){
     if (app->gl_context != NULL) {
         SDL_GL_DeleteContext(app->gl_context);
     }

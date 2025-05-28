@@ -4,8 +4,7 @@
 
 #define LINE_BUFFER_SIZE 1024
 
-int load_model(Model* model, const char* filename)
-{
+int load_model(Model* model, const char* filename){
     FILE* obj_file;
     int success;
 
@@ -29,8 +28,7 @@ int load_model(Model* model, const char* filename)
     return TRUE;
 }
 
-void count_elements(Model* model, FILE* file)
-{
+void count_elements(Model* model, FILE* file){
     char line[LINE_BUFFER_SIZE];
 
     init_model(model);
@@ -54,8 +52,7 @@ void count_elements(Model* model, FILE* file)
     }
 }
 
-int read_elements(Model* model, FILE* file)
-{
+int read_elements(Model* model, FILE* file){
     char line[LINE_BUFFER_SIZE];
     int vertex_index;
     int texture_index;
@@ -109,8 +106,7 @@ int read_elements(Model* model, FILE* file)
     return TRUE;
 }
 
-ElementType calc_element_type(const char* text)
-{
+ElementType calc_element_type(const char* text){
     int i;
 
     i = 0;
@@ -137,8 +133,7 @@ ElementType calc_element_type(const char* text)
     return NONE;
 }
 
-int read_vertex(Vertex* vertex, const char* text)
-{
+int read_vertex(Vertex* vertex, const char* text){
     int i;
 
     i = 0;
@@ -181,8 +176,7 @@ int read_vertex(Vertex* vertex, const char* text)
     return TRUE;
 }
 
-int read_texture_vertex(TextureVertex* texture_vertex, const char* text)
-{
+int read_texture_vertex(TextureVertex* texture_vertex, const char* text){
     int i;
 
     i = 0;
@@ -212,8 +206,7 @@ int read_texture_vertex(TextureVertex* texture_vertex, const char* text)
     return TRUE;
 }
 
-int read_normal(Vertex* normal, const char* text)
-{
+int read_normal(Vertex* normal, const char* text){
     int i;
 
     i = 0;
@@ -256,8 +249,7 @@ int read_normal(Vertex* normal, const char* text)
     return TRUE;
 }
 
-int read_triangle(Triangle* triangle, const char* text)
-{
+int read_triangle(Triangle* triangle, const char* text){
     int point_index;
     int i;
 
@@ -302,8 +294,7 @@ int read_triangle(Triangle* triangle, const char* text)
     return TRUE;
 }
 
-int is_numeric(char c)
-{
+int is_numeric(char c){
     if ((c >= '0' && c <= '9') || c == '-' || c == '.') {
         return TRUE;
     }

@@ -3,11 +3,8 @@
 
 #include <GL/gl.h>
 
-typedef GLubyte Pixel[3];
+typedef GLubyte Pixel[4];
 
-/**
- * Load texture from file and returns with the texture name.
- */
 GLuint load_texture(char* filename);
 
-#endif /* TEXTURE_H */
+#endif 

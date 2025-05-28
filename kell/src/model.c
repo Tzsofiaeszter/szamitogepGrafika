@@ -2,8 +2,7 @@
 
 #include <stdlib.h>
 
-void init_model(Model* model)
-{
+void init_model(Model* model){
     model->n_vertices = 0;
     model->n_texture_vertices = 0;
     model->n_normals = 0;
@@ -14,8 +13,7 @@ void init_model(Model* model)
     model->triangles = NULL;
 }
 
-void allocate_model(Model* model)
-{
+void allocate_model(Model* model){
     model->vertices =
         (Vertex*)malloc((model->n_vertices + 1) * sizeof(Vertex));
     model->texture_vertices =
@@ -26,8 +24,7 @@ void allocate_model(Model* model)
         (Triangle*)malloc(model->n_triangles * sizeof(Triangle));
 }
 
-void free_model(Model* model)
-{
+void free_model(Model* model){
     if (model->vertices != NULL) {
         free(model->vertices);
     }

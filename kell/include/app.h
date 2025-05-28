@@ -11,12 +11,13 @@
 #define VIEWPORT_RATIO (4.0 / 3.0)
 #define VIEWPORT_ASPECT 50.0
 
-typedef struct App
-{
+typedef struct App{
     SDL_Window* window;
     SDL_GLContext gl_context;
+
     bool is_running;
     double uptime;
+
     Camera camera;
     Scene scene;
 } App;

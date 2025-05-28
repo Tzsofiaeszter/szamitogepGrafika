@@ -2,16 +2,14 @@
 
 #include <stdio.h>
 
-void print_model_info(const Model* model)
-{
+void print_model_info(const Model* model){
     printf("Vertices: %d\n", model->n_vertices);
     printf("Texture vertices: %d\n", model->n_texture_vertices);
     printf("Normals: %d\n", model->n_normals);
     printf("Triangles: %d\n", model->n_triangles);
 }
 
-void print_bounding_box(const Model* model)
-{
+void print_bounding_box(const Model* model){
     int i;
     double x, y, z;
     double min_x, max_x, min_y, max_y, min_z, max_z;

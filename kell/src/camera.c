@@ -4,8 +4,7 @@
 
 #include <math.h>
 
-void init_camera(Camera* camera)
-{
+void init_camera(Camera* camera){
     camera->position.x = 10.0;
     camera->position.y = 0.0;
     camera->position.z = 0.0;
@@ -21,8 +20,7 @@ void init_camera(Camera* camera)
     camera->is_preview_visible = false;
 }
 
-void update_camera(Camera* camera, double time)
-{
+void update_camera(Camera* camera, double time){
     double angle;
     double side_angle;
 
@@ -35,8 +33,7 @@ void update_camera(Camera* camera, double time)
     camera->position.y += sin(side_angle) * camera->speed.x * time;
 }
 
-void set_view(const Camera* camera)
-{
+void set_view(const Camera* camera){
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -45,8 +42,7 @@ void set_view(const Camera* camera)
     glTranslatef(-camera->position.x, -camera->position.y, -camera->position.z);
 }
 
-void rotate_camera(Camera* camera, double horizontal, double vertical)
-{
+void rotate_camera(Camera* camera, double horizontal, double vertical){
     camera->rotation.z += horizontal;
     camera->rotation.x += vertical;
 
@@ -67,26 +63,23 @@ void rotate_camera(Camera* camera, double horizontal, double vertical)
     }
 }
 
-void set_camera_speed(Camera* camera, double speed)
-{
+void set_camera_speed(Camera* camera, double speed){
     camera->speed.y = speed;
 }
 
-void set_camera_side_speed(Camera* camera, double speed)
-{
+void set_camera_side_speed(Camera* camera, double speed){
     camera->speed.x = speed;
 }
 
-void show_texture_preview()
-{
-   glDisable(GL_LIGHTING);
+void show_texture_preview(){
+    glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_COLOR_MATERIAL);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glColor3f(1.0, 1.0, 1.0);
+    glColor3f(1, 1, 1);
 
     glBegin(GL_QUADS);
     glTexCoord2f(0, 0);
@@ -99,18 +92,6 @@ void show_texture_preview()
     glVertex3f(-1, -1, -3);
     glEnd();
 
-  glBegin(GL_QUADS);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex3f( 2.0f, -2.0f, -2.0f);  // v2
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex3f(-2.0f, -2.0f, -2.0f);  // v6
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex3f(-2.0f, -2.0f,  2.0f);  // v8
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex3f( 2.0f, -2.0f,  2.0f);  // v4
-glEnd();
-
-   
     glDisable(GL_COLOR_MATERIAL);
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);

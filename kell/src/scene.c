@@ -4,22 +4,43 @@
 #include <draw.h>
 
 
-void init_scene(Scene* scene)
-{
+void init_scene(Scene* scene){
+
+    scene->lighting_enabled = true;
+    scene->show_help = false;
+    scene->light_intensity = 1.0f;
+
+
     load_model(&(scene->szoba), "assets/models/szoba.obj");
-    load_model(&(scene->asztalka), "assets/models/asztalka.obj");
-    load_model(&(scene->szonyegke), "assets/models/szonyegke.obj");
-    load_model(&(scene->csillarka), "assets/models/csillarka.obj");
-    load_model(&(scene->szek), "assets/models/szek.obj");
-    load_model(&(scene->konyvespolc), "assets/models/konyvespolc.obj");
-
-
+    scene->fal_texture_id = load_texture("assets/textures/fal.png");
     
-    //scene->texture_id = load_texture("assets/textures/fal.png");
-    //scene->texture_id = load_texture("assets/textures/csillar.png");
+    load_model(&(scene->asztalka), "assets/models/asztalka.obj");
+    scene->fa2_texture_id = load_texture("assets/textures/fa2.png");
+
+    load_model(&(scene->szonyegke), "assets/models/szonyegke.obj");
+    scene->kek_texture_id = load_texture("assets/textures/kek.png");
+
+    load_model(&(scene->csillarka), "assets/models/csillarka.obj");
+    scene->csillar_texture_id = load_texture("assets/textures/csillar.png");
+
+    load_model(&(scene->szek), "assets/models/szek.obj");
+    scene->szek_texture_id = load_texture("assets/textures/szek.png");
+
+    load_model(&(scene->konyvespolc), "assets/models/konyvespolc.obj");
+    scene->fa0_texture_id = load_texture("assets/textures/fa0.png");
 
 
-    glBindTexture(GL_TEXTURE_2D, scene->texture_id);
+    //load_model(&(scene->pufika), "assets/models/pufika.obj");
+    //scene->kek_texture_id = load_texture("assets/textures/kek.png");
+
+    //load_model(&(scene->ora), "assets/models/ora.obj");
+    //scene->fa3_texture_id = load_texture("assets/textures/fa3.png");
+
+
+    scene->show_help = load_texture("assets/textures/help.png");
+
+
+    //glBindTexture(GL_TEXTURE_2D,scene->kek_texture_id);
 
     scene->material.ambient.red = 0.0;
     scene->material.ambient.green = 0.0;
@@ -35,15 +56,22 @@ void init_scene(Scene* scene)
 
     scene->material.shininess = 0.0;
 
-    scene->lighting_enabled = true;
-
+   
 }
 
-void set_lighting()
-{
+//void set_lighting()
+void set_lighting(const Scene* scene){
     float ambient_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-    float diffuse_light[] = { 1.0f, 1.0f, 1.0, 1.0f };
-    float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+    //float diffuse_light[] = { 1.0f, 1.0f, 1.0, 1.0f };
+
+    float diffuse_light[] = {
+    scene->light_intensity,
+    scene->light_intensity,
+    scene->light_intensity,
+    1.0f
+};
+    
+float specular_light[] = { 0.0f, 0.0f, 0.0f, 1.0f };
     float position[] = { 0.0f, 0.0f, 10.0f, 1.0f };
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
@@ -52,8 +80,7 @@ void set_lighting()
     glLightfv(GL_LIGHT0, GL_POSITION, position);
 }
 
-void set_material(const Material* material)
-{
+void set_material(const Material* material){
     float ambient_material_color[] = {
         material->ambient.red,
         material->ambient.green,
@@ -79,52 +106,69 @@ void set_material(const Material* material)
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, &(material->shininess));
 }
 
-void update_scene(Scene* scene)
-{
+void update_scene(Scene* scene){
 }
 
 void render_scene(const Scene* scene){
 
     set_material(&(scene->material));
-    set_lighting();
+    //set_lighting();
     //draw_origin();
 
+    //set_lighting(scene);
+
+if (scene->lighting_enabled) {
+    glEnable(GL_LIGHTING);
+    set_lighting(scene);
+} else {
+    glDisable(GL_LIGHTING);
+}
+
+
+
     glPushMatrix();
+    glBindTexture(GL_TEXTURE_2D, scene->fal_texture_id); 
     draw_model(&(scene->szoba));
     glPopMatrix();
 
-    glPushMatrix();
-    glColor3f(0.5f, 0.25f, 0.1f);
+    glPushMatrix(); 
+    glBindTexture(GL_TEXTURE_2D, scene->fa2_texture_id); 
+    //glColor3f(0.5f, 0.25f, 0.1f);               // barna
     glTranslatef(0.0f, 0.0f, -1.8f);  
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     draw_model(&(scene->asztalka));
     glPopMatrix();
 
     glPushMatrix();
+    glBindTexture(GL_TEXTURE_2D, scene->kek_texture_id); 
     glTranslatef(0.0f, 0.0f, -1.98f);  
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     draw_model(&(scene->szonyegke));
     glPopMatrix();
 
     glPushMatrix();
+    glBindTexture(GL_TEXTURE_2D, scene->csillar_texture_id); 
     glTranslatef(0.0f, 0.0f, 1.8f);  
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     draw_model(&(scene->csillarka));
     glPopMatrix();
 
     glPushMatrix();
+    glBindTexture(GL_TEXTURE_2D, scene->szek_texture_id); 
     glTranslatef(-1.0f, -1.0f, -1.95f);  
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     draw_model(&(scene->szek));
     glPopMatrix();
 
     glPushMatrix();
+    glBindTexture(GL_TEXTURE_2D, scene->szek_texture_id); 
     glTranslatef(-1.0f, 0.5f, -1.95f);  
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     draw_model(&(scene->szek));
     glPopMatrix();
 
     glPushMatrix();
+    glBindTexture(GL_TEXTURE_2D, scene->fa0_texture_id); 
     glTranslatef(-1.5f, 1.0f, -1.95f);  
     glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
     glRotatef(90.0f, 0.0f, 0.0f, 1.0f);
@@ -151,3 +195,25 @@ void render_scene(const Scene* scene){
 
     glEnd();
 }*/
+
+
+void render_help_overlay(const Scene* scene){
+    glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, scene->show_help);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glColor3f(1.0, 1.0, 1.0);
+
+    glBegin(GL_QUADS);
+    glTexCoord2f(0.0, 0.0); glVertex2f(-1.0, -1.0);
+    glTexCoord2f(1.0, 0.0); glVertex2f(1.0, -1.0);
+    glTexCoord2f(1.0, 1.0); glVertex2f(1.0, 1.0);
+    glTexCoord2f(0.0, 1.0); glVertex2f(-1.0, 1.0);
+    glEnd();
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+}

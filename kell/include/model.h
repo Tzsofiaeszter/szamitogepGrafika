@@ -6,48 +6,28 @@
 
 #define INVALID_VERTEX_INDEX 0
 
-/**
- * Three dimensional vertex
- */
-typedef struct Vertex
-{
+typedef struct Vertex{
     double x;
     double y;
     double z;
 } Vertex;
 
-/**
- * Two dimensional texture vertex
- */
-typedef struct TextureVertex
-{
+typedef struct TextureVertex{
     double u;
     double v;
 } TextureVertex;
 
-/**
- * Point of the face
- */
-typedef struct FacePoint
-{
+typedef struct FacePoint{
     int vertex_index;
     int texture_index;
     int normal_index;
 } FacePoint;
 
-/**
- * Triangle as facepoint triplet
- */
-typedef struct Triangle
-{
+typedef struct Triangle{
     struct FacePoint points[3];
 } Triangle;
 
-/**
- * Three dimensional model with texture
- */
-typedef struct Model
-{
+typedef struct Model{
     int n_vertices;
     int n_texture_vertices;
     int n_normals;
@@ -58,9 +38,6 @@ typedef struct Model
     Triangle* triangles;
 } Model;
 
-/**
- * Types of the considered elements
- */
 typedef enum {
     NONE,
     VERTEX,
@@ -69,19 +46,8 @@ typedef enum {
     FACE
 } ElementType;
 
-/**
- * Initialize the model structure.
- */
 void init_model(Model* model);
-
-/**
- * Allocate model.
- */
 void allocate_model(Model* model);
-
-/**
- * Release the allocated memory of the model.
- */
 void free_model(Model* model);
 
-#endif /* OBJ_MODEL_H */
+#endif 

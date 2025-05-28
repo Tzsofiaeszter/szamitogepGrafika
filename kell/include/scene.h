@@ -8,8 +8,7 @@
 
 #include <stdbool.h>
 
-typedef struct Scene
-{
+typedef struct Scene{
     Model szoba;
     Model asztalka;
     Model szonyegke;
@@ -17,42 +16,34 @@ typedef struct Scene
     Model szek;
     Model konyvespolc;
 
-
     Material material;
-    GLuint texture_id;
+
+    GLuint fal_texture_id;   // szoba
+    GLuint fa2_texture_id;   // asztal
+    GLuint fa0_texture_id;    // könyvespolc
+    // GLuint fa3_texture_id;         //óra
+    GLuint szek_texture_id;  // szék
+    GLuint kek_texture_id;          //szőnyeg
+    GLuint csillar_texture_id;// csillár
+
+
+    GLuint help_texture;
+
+    bool show_help;
 
     bool lighting_enabled;
 
+    float light_intensity;
+
 } Scene;
 
-/**
- * Initialize the scene by loading models.
- */
+
 void init_scene(Scene* scene);
-
-/**
- * Set the lighting of the scene.
- */
 void set_lighting();
-
-/**
- * Set the current material.
- */
 void set_material(const Material* material);
-
-/**
- * Update the scene.
- */
 void update_scene(Scene* scene);
-
-/**
- * Render the scene objects.
- */
 void render_scene(const Scene* scene);
+//void draw_origin();
+void render_help_overlay();
 
-/**
- * Draw the origin of the world coordinate system.
- */
-void draw_origin();
-
-#endif /* SCENE_H */
+#endif 
