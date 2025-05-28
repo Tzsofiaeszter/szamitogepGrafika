@@ -105,11 +105,11 @@ void handle_app_events(App* app){
     static bool is_mouse_down = false;
     static int mouse_x = 0;
     static int mouse_y = 0;
-    int x;
-    int y;
+    int x, y;
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
+
         case SDL_KEYDOWN:
             switch (event.key.keysym.scancode) {
             case SDL_SCANCODE_ESCAPE:
@@ -127,7 +127,7 @@ void handle_app_events(App* app){
             case SDL_SCANCODE_D:
                 set_camera_side_speed(&(app->camera), -1);
                 break;
-            case SDL_SCANCODE_L:                                                 //  az L betű kapcsolja a világítást
+            case SDL_SCANCODE_L:
                 app->scene.lighting_enabled = !app->scene.lighting_enabled;
                 if (app->scene.lighting_enabled) {
                     glEnable(GL_LIGHTING);
@@ -135,21 +135,65 @@ void handle_app_events(App* app){
                     glDisable(GL_LIGHTING);
                 }
                 break;
-            
+            case SDL_SCANCODE_H:
+                app->scene.show_help_visible = !app->scene.show_help_visible;
+                break;
             case SDL_SCANCODE_KP_PLUS:
-            case SDL_SCANCODE_EQUALS:  // + gomb
+            case SDL_SCANCODE_EQUALS:
                 app->scene.light_intensity += 0.1f;
                 if (app->scene.light_intensity > 1.0f) app->scene.light_intensity = 1.0f;
-            break;
+                break;
             case SDL_SCANCODE_KP_MINUS:
             case SDL_SCANCODE_MINUS:
                 app->scene.light_intensity -= 0.1f;
                 if (app->scene.light_intensity < 0.0f) app->scene.light_intensity = 0.0f;
                 break;
+
+            // --- Szek1 mozgatás (bal szék)
+            case SDL_SCANCODE_T:
+                move_szek1(&(app->scene), 0.0f, 0.1f, 0.0f); // fel
+                break;
+            case SDL_SCANCODE_G:
+                move_szek1(&(app->scene), 0.0f, -0.1f, 0.0f); // le
+                break;
+            case SDL_SCANCODE_F:
+                move_szek1(&(app->scene), -0.1f, 0.0f, 0.0f); // balra
+                break;
+            case SDL_SCANCODE_E:
+                move_szek1(&(app->scene), 0.1f, 0.0f, 0.0f); // jobbra
+                break;
+            case SDL_SCANCODE_R:
+                move_szek1(&(app->scene), 0.0f, 0.0f, 0.1f); // előre
+                break;
+            case SDL_SCANCODE_Y:
+                move_szek1(&(app->scene), 0.0f, 0.0f, -0.1f); // hátra
+                break;
+
+            // --- Szek2 mozgatás (jobb szék)
+            case SDL_SCANCODE_I:
+                move_szek2(&(app->scene), 0.0f, 0.1f, 0.0f); // fel
+                break;
+            case SDL_SCANCODE_K:
+                move_szek2(&(app->scene), 0.0f, -0.1f, 0.0f); // le
+                break;
+            case SDL_SCANCODE_J:
+                move_szek2(&(app->scene), -0.1f, 0.0f, 0.0f); // balra
+                break;
+            case SDL_SCANCODE_M:
+                move_szek2(&(app->scene), 0.1f, 0.0f, 0.0f); // jobbra (nem L!)
+                break;
+            case SDL_SCANCODE_U:
+                move_szek2(&(app->scene), 0.0f, 0.0f, 0.1f); // előre
+                break;
+            case SDL_SCANCODE_O:
+                move_szek2(&(app->scene), 0.0f, 0.0f, -0.1f); // hátra
+                break;
+
             default:
                 break;
             }
             break;
+
         case SDL_KEYUP:
             switch (event.key.keysym.scancode) {
             case SDL_SCANCODE_W:
@@ -160,18 +204,15 @@ void handle_app_events(App* app){
             case SDL_SCANCODE_D:
                 set_camera_side_speed(&(app->camera), 0);
                 break;
-            case SDL_SCANCODE_H:
-                app->scene.show_help = !app->scene.show_help;
-                break;
-
-
             default:
                 break;
             }
             break;
+
         case SDL_MOUSEBUTTONDOWN:
             is_mouse_down = true;
             break;
+
         case SDL_MOUSEMOTION:
             SDL_GetMouseState(&x, &y);
             if (is_mouse_down) {
@@ -180,17 +221,22 @@ void handle_app_events(App* app){
             mouse_x = x;
             mouse_y = y;
             break;
+
         case SDL_MOUSEBUTTONUP:
             is_mouse_down = false;
             break;
+
         case SDL_QUIT:
             app->is_running = false;
             break;
+
         default:
             break;
         }
     }
 }
+
+
 
 void update_app(App* app){
     double current_time;
@@ -218,7 +264,7 @@ void render_app(App* app){
     }
 
 
-if (app->scene.show_help) {
+if (app->scene.show_help_visible) {
     render_help_overlay(&(app->scene));
 }
 

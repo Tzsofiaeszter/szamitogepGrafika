@@ -7,7 +7,7 @@
 void init_scene(Scene* scene){
 
     scene->lighting_enabled = true;
-    scene->show_help = false;
+    scene->show_help_visible = false;
     scene->light_intensity = 1.0f;
 
 
@@ -37,7 +37,7 @@ void init_scene(Scene* scene){
     //scene->fa3_texture_id = load_texture("assets/textures/fa3.png");
 
 
-    scene->show_help = load_texture("assets/textures/help.png");
+    scene->help_texture_id = load_texture("assets/textures/help.png");
 
 
     //glBindTexture(GL_TEXTURE_2D,scene->kek_texture_id);
@@ -56,7 +56,17 @@ void init_scene(Scene* scene){
 
     scene->material.shininess = 0.0;
 
-   
+// mozgatható székek pozíciója
+    scene->szek1_position[0] = -1.0f;
+    scene->szek1_position[1] = -1.0f;
+    scene->szek1_position[2] = -1.95f;
+
+    scene->szek2_position[0] = -1.0f;
+    scene->szek2_position[1] = 0.5f;
+    scene->szek2_position[2] = -1.95f;
+
+
+
 }
 
 //void set_lighting()
@@ -115,15 +125,15 @@ void render_scene(const Scene* scene){
     //set_lighting();
     //draw_origin();
 
-    //set_lighting(scene);
+    
 
 if (scene->lighting_enabled) {
     glEnable(GL_LIGHTING);
-    set_lighting(scene);
 } else {
     glDisable(GL_LIGHTING);
 }
 
+set_lighting(scene);
 
 
     glPushMatrix();
@@ -155,14 +165,14 @@ if (scene->lighting_enabled) {
 
     glPushMatrix();
     glBindTexture(GL_TEXTURE_2D, scene->szek_texture_id); 
-    glTranslatef(-1.0f, -1.0f, -1.95f);  
+    glTranslatef(scene->szek1_position[0], scene->szek1_position[1], scene->szek1_position[2]);
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     draw_model(&(scene->szek));
     glPopMatrix();
 
     glPushMatrix();
     glBindTexture(GL_TEXTURE_2D, scene->szek_texture_id); 
-    glTranslatef(-1.0f, 0.5f, -1.95f);  
+    glTranslatef(scene->szek2_position[0], scene->szek2_position[1], scene->szek2_position[2]);
     glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     draw_model(&(scene->szek));
     glPopMatrix();
@@ -197,23 +207,48 @@ if (scene->lighting_enabled) {
 }*/
 
 
-void render_help_overlay(const Scene* scene){
+void render_help_overlay(const Scene* scene) {
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho(-1, 1, -1, 1, -1, 1);  // ortografikus vetítés 2D-hez
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glLoadIdentity();
+
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, scene->show_help);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    glBindTexture(GL_TEXTURE_2D, scene->help_texture_id);
     glColor3f(1.0, 1.0, 1.0);
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0.0, 0.0); glVertex2f(-1.0, -1.0);
-    glTexCoord2f(1.0, 0.0); glVertex2f(1.0, -1.0);
-    glTexCoord2f(1.0, 1.0); glVertex2f(1.0, 1.0);
-    glTexCoord2f(0.0, 1.0); glVertex2f(-1.0, 1.0);
+        glTexCoord2f(1.0, 1.0); glVertex2f(-1.0, -1.0);  // bal alsó
+        glTexCoord2f(0.0, 1.0); glVertex2f( 1.0, -1.0);  // jobb alsó
+        glTexCoord2f(0.0, 0.0); glVertex2f( 1.0,  1.0);  // jobb felső
+        glTexCoord2f(1.0, 0.0); glVertex2f(-1.0,  1.0);  // bal felső
     glEnd();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
+
+    glPopMatrix();
+    glMatrixMode(GL_PROJECTION);
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
+
+void move_szek1(Scene* scene, float dx, float dy, float dz) {
+    scene->szek1_position[0] += dx;
+    scene->szek1_position[1] += dy;
+    scene->szek1_position[2] += dz;
+}
+
+
+void move_szek2(Scene* scene, float dx, float dy, float dz) {
+    scene->szek2_position[0] += dx;
+    scene->szek2_position[1] += dy;
+    scene->szek2_position[2] += dz;
 }

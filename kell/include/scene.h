@@ -27,13 +27,16 @@ typedef struct Scene{
     GLuint csillar_texture_id;// csillár
 
 
-    GLuint help_texture;
+    GLuint help_texture_id;
 
-    bool show_help;
+    bool show_help_visible;
 
     bool lighting_enabled;
 
     float light_intensity;
+
+    float szek1_position[3];
+    float szek2_position[3];
 
 } Scene;
 
@@ -45,5 +48,9 @@ void update_scene(Scene* scene);
 void render_scene(const Scene* scene);
 //void draw_origin();
 void render_help_overlay();
+
+void move_szek1(Scene* scene, float dx, float dy, float dz);
+void move_szek2(Scene* scene, float dx, float dy, float dz);
+
 
 #endif 
