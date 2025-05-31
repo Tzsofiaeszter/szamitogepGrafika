@@ -5,5 +5,6 @@
 
 void draw_model(const Model* model);
 void draw_triangles(const Model* model);
+//void draw_triangles_colored(const Model* model);
 
 #endif 

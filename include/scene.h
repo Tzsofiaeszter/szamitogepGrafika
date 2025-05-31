@@ -3,91 +3,88 @@
 
 #include "camera.h"
 #include "texture.h"
-#include "model.h"
-#include "light.h"
+#include "utils.h"
+#include <model.h>
 
-struct App;
-struct GameState;
+#include <stdbool.h>
 
-#include <GL/gl.h>
+#define MAX_RAINDROPS 1000
+
+typedef struct RainDrop {
+    vec3 position;
+    float speed;
+} RainDrop;
 
 typedef struct Scene{
-    Light fenyek[4];
-    int n_fenyek;
-
-    Model ajtofelfa1;
-    Model ajtofelfa2;
-    Model ajtofelfa3;
-    Model ajtofelfa4;
-    Model ajtolap1;
-    Model ajtolap2;
-    Model ajtolap3;
-    Model ajtolap4;        
-    Model asztal_lab;
-    Model asztal_lap;   
-    Model eloszoba_szonyeg;
-    Model falak;
-    Model kanape;
-    Model kek_pufika;
+    Model szoba;
+    Model asztalka;
+    Model szonyegke;
+    Model csillarka;
+    Model szek;
     Model konyvespolc;
-    Model kintiSzek;
-    Model kulteri_fa;
-    Model lepcso_padlo;
-    Model nappali_szonyeg;
-    Model padlo;    
-    Model regi_ora;
-    Model szek_alj;
-    Model szek_teteje;
-    Model teto;
-
-    Material material;
-    
-    GLuint texture_ajto;
-    GLuint texture_barna;
-    GLuint texture_barna2;
-    GLuint texture_cserep;
-    GLuint texture_fa1;
-    GLuint texture_fa2;
-    GLuint texture_fal;
-    GLuint texture_fem;
-    GLuint texture_szek;
-    GLuint texture_szonyeg;
+    Model book1;
+    Model book2;
+    Model gyep;
+    Model fa1;
    
 
-    // Modell pozíciók, forgatások, skálázások
-    Transform ajtofelfa1_transform;
-    Transform ajtolap1_transform;
-    Transform ajtofelfa2_transform;
-    Transform ajtolap2_transform;
-    Transform ajtofelfa3_transform;
-    Transform ajtolap3_transform;
-    Transform ajtofelfa4_transform;
-    Transform ajtolap4_transform;
-    Transform asztal_lap_transform;
-    Transform asztal_lab_transform;
-    Transform eloszoba_szonyeg_transform;
-    Transform falak_transform;
-    Transform kanape_transform;
-    Transform kek_pufika_transform;
-    Transform kintiSzek_transform;
-    Transform kulteri_fa_transform;
-    Transform konyvespolc_transform;
-    Transform nappali_szonyeg_transform;
-    Transform lepcso_padlo_transform;
-    Transform padlo_transform;
-    Transform regi_ora_transform;
-    Transform szek_alj_transform;
-    Transform szek_teteje_transform;
-    Transform teto_transform;
+    Material material;
 
- 
+    GLuint fal_texture_id;   // szoba
+    GLuint fa2_texture_id;   // asztal
+    GLuint fa0_texture_id;    // könyvespolc
+    // GLuint fa3_texture_id;         //óra
+    GLuint szek_texture_id;  // szék
+    GLuint kek_texture_id;          //szőnyeg
+    GLuint csillar_texture_id;// csillár
+    GLuint book1_texture_id;
+    GLuint book2_texture_id;
+    GLuint gyep_texture_id;
+    GLuint facska1_texture_id;
+
+    GLuint help_texture_id;
+
+    //GLuint sky_top_texture_id;
+    GLuint sky_side_texture_id;
+
+    bool show_help_visible;
+
+    bool lighting_enabled;
+
+    float light_intensity;
+
+    RainDrop raindrops[MAX_RAINDROPS];
+    bool rain_enabled;
+
+    vec3 szek1_position;
+    vec3 szek2_position;
+
+    
+    bool lightning_active;
+    float lightning_intensity;    // villanás fényereje (0..1)
+    int lightning_timer;          // időzítő a villanás állapotához (pl. frame-ekben)
+    int lightning_cooldown;       // idő a következő villanásig
 
 } Scene;
 
-void init_scene(Scene* scene); // Nincs GameState* paraméter, mert a fényerőt az init_lights kapja
-void update_scene(Scene* scene, const struct App* app, double elapsed_time); // App* és elapsed_time hozzáadva
+
+void init_scene(Scene* scene);
+void set_lighting();
+void set_material(const Material* material);
+void update_scene(Scene* scene);
 void render_scene(const Scene* scene);
-void destroy_scene(Scene* scene);
-void init_lights(Scene* scene, int brightness); // Brightness paraméter hozzáadva
+//void draw_origin();
+void render_help_overlay();
+
+void move_szek1(Scene* scene, float dx, float dy, float dz);
+void move_szek2(Scene* scene, float dx, float dy, float dz);
+
+
+void increase_light(Scene* scene);
+
+void decrease_light(Scene* scene);
+
+
+void draw_skybox(const Scene* scene, float size);
 
 #endif 

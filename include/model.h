@@ -4,78 +4,38 @@
 #define TRUE 1
 #define FALSE 0
 
-#include <GL/gl.h>
 #define INVALID_VERTEX_INDEX 0
 
-typedef struct {
-    float x;
-    float y;
-    float z;
-} Vec3;
-
-typedef struct {
-    float red;
-    float green;
-    float blue;
-} Color;
-
-typedef struct {
-    Color ambient;
-    Color diffuse;
-    Color specular;
-    float shininess;
-    GLuint texture_id;
-} Material;
-
-typedef struct {
-    Vec3 pozicio;
-    Vec3 forgatas;
-    Vec3 skalazas;
-} Transform;
-
-typedef struct {
+typedef struct Vertex{
     double x;
     double y;
     double z;
 } Vertex;
 
-typedef struct {
+typedef struct TextureVertex{
     double u;
     double v;
 } TextureVertex;
 
-typedef struct {
+typedef struct FacePoint{
     int vertex_index;
     int texture_index;
     int normal_index;
 } FacePoint;
 
-typedef struct {
-    FacePoint points[3];
+typedef struct Triangle{
+    struct FacePoint points[3];
 } Triangle;
 
-typedef struct {
-    float* vertices;
-    float* texcoords;
-    float* normals;
-    unsigned int* indices;
-    int vertex_count;
-    int index_count;
-} Mesh;                  // 3szögek miatt             
-
-typedef struct {
+typedef struct Model{
     int n_vertices;
     int n_texture_vertices;
     int n_normals;
     int n_triangles;
-    
     Vertex* vertices;
     TextureVertex* texture_vertices;
     Vertex* normals;
-    Triangle* triangles;   // ez a 3szögek "nyers" formája
-    Mesh mesh;             // ez pedig amit ki tud olvasni
-    
-    Material material; 
+    Triangle* triangles;
 } Model;
 
 typedef enum {
@@ -90,6 +50,4 @@ void init_model(Model* model);
 void allocate_model(Model* model);
 void free_model(Model* model);
 
-double degree_to_radian(double degree);
-
-#endif  
+#endif 

@@ -1,30 +1,5 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -Wpedantic -Iinclude
-BUILD_DIR = obj
-SRC_DIR = src
-EXECUTABLE = game
+all:
+	gcc -Iinclude/ src/app.c src/camera.c src/main.c src/scene.c src/texture.c src/utils.c src/model.c src/load.c src/info.c src/draw.c src/transform.c -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lopengl32 -lm -o game.exe -Wall -Wextra -Wpedantic
 
-# List all your source files here
-SOURCES = $(wildcard $(SRC_DIR)/*.c)
-
-# Create object files from source files
-OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
-
-LDLIBS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lopengl32 -lm
-
-all: $(BUILD_DIR) $(EXECUTABLE)
-
-$(BUILD_DIR):
-	mkdir -p $@
-
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
-
-$(EXECUTABLE): $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $@ $(LDLIBS)
-
-run: $(EXECUTABLE)
-	./$(EXECUTABLE)
-
-clean:
-	rm -rf $(BUILD_DIR) $(EXECUTABLE);
+linux:
+	gcc -Iinclude/ src/app.c src/camera.c src/main.c src/scene.c src/texture.c src/utils.c -lobj -lSDL2 -lSDL2_image -lGL -lm -o cube -Wall -Wextra -Wpedantic
